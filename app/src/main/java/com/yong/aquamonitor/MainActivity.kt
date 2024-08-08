@@ -25,6 +25,7 @@ import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Volume
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneOffset
@@ -91,19 +92,19 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             Log.i(LOG_TAG, "Reading Current Value...")
             try {
-                val hydrationResponse = healthConnectClient!!.aggregate(
+                val hydrationResponse = async { healthConnectClient!!.aggregate(
                     AggregateRequest(
                         metrics = setOf(HydrationRecord.VOLUME_TOTAL),
                         timeRangeFilter = TimeRangeFilter.before(Instant.now())
                     )
-                )
-                hydrationValue = hydrationResponse[HydrationRecord.VOLUME_TOTAL]?.inMilliliters
+                ) }.await()[HydrationRecord.VOLUME_TOTAL]
+                hydrationValue = hydrationResponse?.inMilliliters
             } catch(e: Exception) {
                 Log.e(LOG_TAG, "Health Connect Get Error: [$e]")
             }
         }
 
-        tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: 0.0)
+        tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: -1.0)
     }
 
     private fun updateHydration(value: Int) {
@@ -111,7 +112,7 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val stepsRecord = HydrationRecord(
+                val hydrationRecord = HydrationRecord(
                     volume = Volume.milliliters(value.toDouble()),
                     startTime = Instant.now(),
                     endTime = Instant.now(),
@@ -122,7 +123,7 @@ class MainActivity : AppCompatActivity() {
                         DataOrigin("com.yong.aquamonitor"),
                         Instant.now())
                 )
-                val insertResult = healthConnectClient!!.insertRecords(listOf(stepsRecord))
+                val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
                 for(res in insertResult.recordIdsList) {
                     Log.i(LOG_TAG, "Inserted $res")
                 }
@@ -130,8 +131,6 @@ class MainActivity : AppCompatActivity() {
                 Log.e(LOG_TAG, "Health Connect Set Error: [$e]")
             }
         }
-
-        getCurrentHydration()
     }
 
     private fun isHealthConnectAvail(context: Context): Boolean {
@@ -174,6 +173,7 @@ class MainActivity : AppCompatActivity() {
                 } catch(e: NumberFormatException) {
                     Log.e(LOG_TAG, "Failed to get Hydration Value Input")
                 }
+                getCurrentHydration()
             }
         }
     }
