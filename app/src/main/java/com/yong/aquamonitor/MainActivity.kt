@@ -5,6 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +30,11 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var healthConnectClient: HealthConnectClient? = null
+
+    private var btnSend: Button? = null
+    private var inputValue: EditText? = null
+    private var tvValue: TextView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,6 +44,11 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        btnSend = findViewById(R.id.main_btn_send)
+        inputValue = findViewById(R.id.main_input_value)
+        tvValue = findViewById(R.id.main_text_value)
+        btnSend!!.setOnClickListener(btnListener)
 
         if(!isHealthConnectAvail(applicationContext)) {
             Log.e(LOG_TAG, "Health Connect is not Available")
@@ -60,6 +74,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.i(LOG_TAG, "Successfully Initialized Application")
+    }
+
+    private suspend fun getCurrentHydration() {
+        Log.i(LOG_TAG, "Reading Current Value...")
+    }
+
+    private suspend fun updateHydration(value: Int) {
+        Log.i(LOG_TAG, "Updating Current Value with $value...")
     }
 
     private fun isHealthConnectAvail(context: Context): Boolean {
@@ -91,6 +113,21 @@ class MainActivity : AppCompatActivity() {
         val granted = healthConnectClient.permissionController.getGrantedPermissions()
         if(!granted.containsAll(PERMISSION_LIST)) {
             requestPermissions.launch(PERMISSION_LIST)
+        }
+    }
+
+    private val btnListener = View.OnClickListener { view ->
+        when(view.id) {
+            R.id.main_btn_send -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        updateHydration(inputValue!!.text.toString().toInt())
+                    } catch(e: NumberFormatException) {
+                        Log.e(LOG_TAG, "Failed to get Hydration Value Input")
+                    }
+
+                }
+            }
         }
     }
 }
