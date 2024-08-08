@@ -23,10 +23,12 @@ import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Volume
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.Locale
@@ -89,22 +91,25 @@ class MainActivity : AppCompatActivity() {
     private fun getCurrentHydration() {
         var hydrationValue: Double? = null
 
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch {
             Log.i(LOG_TAG, "Reading Current Value...")
-            try {
-                val hydrationResponse = async { healthConnectClient!!.aggregate(
-                    AggregateRequest(
-                        metrics = setOf(HydrationRecord.VOLUME_TOTAL),
-                        timeRangeFilter = TimeRangeFilter.before(Instant.now())
-                    )
-                ) }.await()[HydrationRecord.VOLUME_TOTAL]
-                hydrationValue = hydrationResponse?.inMilliliters
-            } catch(e: Exception) {
-                Log.e(LOG_TAG, "Health Connect Get Error: [$e]")
+            withContext(Dispatchers.IO) {
+                try {
+                    val hydrationResponse = async { healthConnectClient!!.aggregate(
+                        AggregateRequest(
+                            metrics = setOf(HydrationRecord.VOLUME_TOTAL),
+                            timeRangeFilter = TimeRangeFilter.before(Instant.now())
+                        )
+                    ) }.await()[HydrationRecord.VOLUME_TOTAL]
+                    hydrationValue = hydrationResponse?.inMilliliters
+                } catch(e: Exception) {
+                    Log.e(LOG_TAG, "Health Connect Get Error: [$e]")
+                }
+            }
+            withContext(Dispatchers.Main) {
+                tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: -1.0)
             }
         }
-
-        tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: -1.0)
     }
 
     private fun updateHydration(value: Int) {
