@@ -112,29 +112,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateHydration(value: Int) {
+    private suspend fun updateHydration(value: Int) {
         Log.i(LOG_TAG, "Updating Current Value with $value...")
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val hydrationRecord = HydrationRecord(
-                    volume = Volume.milliliters(value.toDouble()),
-                    startTime = Instant.now(),
-                    endTime = Instant.now(),
-                    startZoneOffset = ZoneOffset.MIN,
-                    endZoneOffset = ZoneOffset.MIN,
-                    metadata = Metadata(
-                        id = Instant.now().toString(),
-                        DataOrigin("com.yong.aquamonitor"),
-                        Instant.now())
-                )
-                val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
-                for(res in insertResult.recordIdsList) {
-                    Log.i(LOG_TAG, "Inserted $res")
-                }
-            } catch(e: Exception) {
-                Log.e(LOG_TAG, "Health Connect Set Error: [$e]")
+        try {
+            val hydrationRecord = HydrationRecord(
+                volume = Volume.milliliters(value.toDouble()),
+                startTime = Instant.now(),
+                endTime = Instant.now(),
+                startZoneOffset = ZoneOffset.MIN,
+                endZoneOffset = ZoneOffset.MIN,
+                metadata = Metadata(
+                    id = Instant.now().toString(),
+                    DataOrigin("com.yong.aquamonitor"),
+                    Instant.now())
+            )
+            val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
+            for(res in insertResult.recordIdsList) {
+                Log.i(LOG_TAG, "Inserted $res")
             }
+        } catch(e: Exception) {
+            Log.e(LOG_TAG, "Health Connect Set Error: [$e]")
         }
     }
 
@@ -173,12 +171,18 @@ class MainActivity : AppCompatActivity() {
     private val btnListener = View.OnClickListener { view ->
         when(view.id) {
             R.id.main_btn_send -> {
-                try {
-                    updateHydration(inputValue!!.text.toString().toInt())
-                } catch(e: NumberFormatException) {
-                    Log.e(LOG_TAG, "Failed to get Hydration Value Input")
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        try {
+                            updateHydration(inputValue!!.text.toString().toInt())
+                        } catch(e: NumberFormatException) {
+                            Log.e(LOG_TAG, "Failed to get Hydration Value Input")
+                        }
+                    }
+                    withContext(Dispatchers.Main) {
+                        getCurrentHydration()
+                    }
                 }
-                getCurrentHydration()
             }
         }
     }
