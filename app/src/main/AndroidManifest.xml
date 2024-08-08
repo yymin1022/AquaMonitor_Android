@@ -43,4 +43,8 @@
         </activity-alias>
     </application>
 
+    <queries>
+        <package android:name="com.google.android.apps.healthdata" />
+    </queries>
+
 </manifest>
