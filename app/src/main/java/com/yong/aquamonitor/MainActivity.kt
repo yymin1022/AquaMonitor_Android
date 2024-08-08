@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.health.connect.client.HealthConnectClient
 
 class MainActivity : AppCompatActivity() {
+    private var healthConnectClient: HealthConnectClient? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         if(!isHealthConnectAvail(applicationContext)) {
             finish()
         }
+
+        healthConnectClient = getHealthConnectClient(applicationContext)
     }
 
     private fun isHealthConnectAvail(context: Context): Boolean {
@@ -45,5 +48,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    private fun getHealthConnectClient(context: Context): HealthConnectClient {
+        return HealthConnectClient.getOrCreate(context)
     }
 }
