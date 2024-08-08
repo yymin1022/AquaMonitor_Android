@@ -1,10 +1,14 @@
 package com.yong.aquamonitor
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.health.connect.client.HealthConnectClient
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,5 +20,30 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        if(!isHealthConnectAvail(applicationContext)) {
+            finish()
+        }
+    }
+
+    private fun isHealthConnectAvail(context: Context): Boolean {
+        val availStatus = HealthConnectClient.getSdkStatus(context)
+        if(availStatus == HealthConnectClient.SDK_UNAVAILABLE) {
+            return false
+        }
+        if(availStatus == HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED) {
+            val vendingUrl = "market://details?id=com.google.android.apps.healthdata&url=healthconnect%3A%2F%2Fonboarding"
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW).apply {
+                    setPackage("com.android.vending")
+                    data = Uri.parse(vendingUrl)
+                    putExtra("overlay", true)
+                    putExtra("callerId", context.packageName)
+                }
+            )
+            return false
+        }
+
+        return true
     }
 }
