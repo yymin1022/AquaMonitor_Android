@@ -18,9 +18,13 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.HydrationRecord
+import androidx.health.connect.client.request.AggregateRequest
+import androidx.health.connect.client.time.TimeRangeFilter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private val LOG_TAG = "AquaMonitor"
@@ -74,14 +78,34 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.i(LOG_TAG, "Successfully Initialized Application")
+        getCurrentHydration()
     }
 
-    private suspend fun getCurrentHydration() {
-        Log.i(LOG_TAG, "Reading Current Value...")
+    private fun getCurrentHydration() {
+        var hydrationValue: Double? = null
+
+        CoroutineScope(Dispatchers.IO).launch {
+            Log.i(LOG_TAG, "Reading Current Value...")
+            try {
+                val hydrationResponse = healthConnectClient!!.aggregate(
+                    AggregateRequest(
+                        metrics = setOf(HydrationRecord.VOLUME_TOTAL),
+                        timeRangeFilter = TimeRangeFilter.before(Instant.now())
+                    )
+                )
+                hydrationValue = hydrationResponse[HydrationRecord.VOLUME_TOTAL]?.inMilliliters
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "Health Connect Get Error: [$e]")
+            }
+        }
+
+        tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: 0.0)
     }
 
-    private suspend fun updateHydration(value: Int) {
+    private fun updateHydration(value: Int) {
         Log.i(LOG_TAG, "Updating Current Value with $value...")
+
+        getCurrentHydration()
     }
 
     private fun isHealthConnectAvail(context: Context): Boolean {
@@ -119,13 +143,10 @@ class MainActivity : AppCompatActivity() {
     private val btnListener = View.OnClickListener { view ->
         when(view.id) {
             R.id.main_btn_send -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        updateHydration(inputValue!!.text.toString().toInt())
-                    } catch(e: NumberFormatException) {
-                        Log.e(LOG_TAG, "Failed to get Hydration Value Input")
-                    }
-
+                try {
+                    updateHydration(inputValue!!.text.toString().toInt())
+                } catch(e: NumberFormatException) {
+                    Log.e(LOG_TAG, "Failed to get Hydration Value Input")
                 }
             }
         }
