@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Current Hydration Value : 0"
+        android:textSize="25sp"
         android:id="@+id/main_text_value"
         app:layout_constraintBottom_toTopOf="@id/main_input_value"
         app:layout_constraintEnd_toEndOf="parent"
