@@ -18,12 +18,16 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.HydrationRecord
+import androidx.health.connect.client.records.metadata.DataOrigin
+import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.time.TimeRangeFilter
+import androidx.health.connect.client.units.Volume
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Instant
+import java.time.ZoneOffset
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -94,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
                 hydrationValue = hydrationResponse[HydrationRecord.VOLUME_TOTAL]?.inMilliliters
-            } catch (e: Exception) {
+            } catch(e: Exception) {
                 Log.e(LOG_TAG, "Health Connect Get Error: [$e]")
             }
         }
@@ -104,6 +108,28 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateHydration(value: Int) {
         Log.i(LOG_TAG, "Updating Current Value with $value...")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val stepsRecord = HydrationRecord(
+                    volume = Volume.milliliters(value.toDouble()),
+                    startTime = Instant.now(),
+                    endTime = Instant.now(),
+                    startZoneOffset = ZoneOffset.MIN,
+                    endZoneOffset = ZoneOffset.MIN,
+                    metadata = Metadata(
+                        id = Instant.now().toString(),
+                        DataOrigin("com.yong.aquamonitor"),
+                        Instant.now())
+                )
+                val insertResult = healthConnectClient!!.insertRecords(listOf(stepsRecord))
+                for(res in insertResult.recordIdsList) {
+                    Log.i(LOG_TAG, "Inserted $res")
+                }
+            } catch(e: Exception) {
+                Log.e(LOG_TAG, "Health Connect Set Error: [$e]")
+            }
+        }
 
         getCurrentHydration()
     }
