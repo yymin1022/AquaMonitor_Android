@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -25,6 +24,7 @@ import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Volume
 import androidx.lifecycle.lifecycleScope
 import com.yong.aquamonitor.R
+import com.yong.aquamonitor.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -35,7 +35,6 @@ import java.time.ZoneOffset
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
-    private val LOG_TAG = "AquaMonitor"
     private val PERMISSION_LIST = setOf(
         HealthPermission.getReadPermission(HydrationRecord::class),
         HealthPermission.getWritePermission(HydrationRecord::class)
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         btnSend!!.setOnClickListener(btnListener)
 
         if(!isHealthConnectAvail(applicationContext)) {
-            Log.e(LOG_TAG, "Health Connect is not Available")
+            Logger.LogE("Health Connect is not Available")
             finish()
         }
 
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             if (granted.containsAll(PERMISSION_LIST)) {
                 permissionFlag = true
             } else {
-                Log.e(LOG_TAG, "Health Connect Permission is not Granted")
+                Logger.LogE("Health Connect Permission is not Granted")
             }
         }
 
@@ -85,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        Log.i(LOG_TAG, "Successfully Initialized Application")
+        Logger.LogI("Successfully Initialized Application")
         getCurrentHydration()
     }
 
@@ -93,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         var hydrationValue: Double? = null
 
         lifecycleScope.launch {
-            Log.i(LOG_TAG, "Reading Current Value...")
+            Logger.LogI("Reading Current Value...")
             withContext(Dispatchers.IO) {
                 try {
                     val hydrationResponse = async { healthConnectClient!!.aggregate(
@@ -104,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                     ) }.await()[HydrationRecord.VOLUME_TOTAL]
                     hydrationValue = hydrationResponse?.inMilliliters
                 } catch(e: Exception) {
-                    Log.e(LOG_TAG, "Health Connect Get Error: [$e]")
+                    Logger.LogE("Health Connect Get Error: [$e]")
                 }
             }
             withContext(Dispatchers.Main) {
@@ -114,7 +113,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun updateHydration(value: Int) {
-        Log.i(LOG_TAG, "Updating Current Value with $value...")
+        Logger.LogI("Updating Current Value with $value...")
 
         try {
             val hydrationRecord = HydrationRecord(
@@ -130,10 +129,10 @@ class MainActivity : AppCompatActivity() {
             )
             val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
             for(res in insertResult.recordIdsList) {
-                Log.i(LOG_TAG, "Inserted $res")
+                Logger.LogI("Inserted $res")
             }
         } catch(e: Exception) {
-            Log.e(LOG_TAG, "Health Connect Set Error: [$e]")
+            Logger.LogE("Health Connect Set Error: [$e]")
         }
     }
 
@@ -177,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                         try {
                             updateHydration(inputValue!!.text.toString().toInt())
                         } catch(e: NumberFormatException) {
-                            Log.e(LOG_TAG, "Failed to get Hydration Value Input")
+                            Logger.LogE("Failed to get Hydration Value Input")
                         }
                     }
                     withContext(Dispatchers.Main) {
