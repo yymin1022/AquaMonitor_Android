@@ -3,18 +3,18 @@ package com.yong.aquamonitor.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
+import com.yong.aquamonitor.util.Logger
 
 class BleService: Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("BleService", "Started")
+        Logger.LogD("Started")
 
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("BleService", "Stopped")
+        Logger.LogD("Stopped")
     }
 
     override fun onBind(intent: Intent?): IBinder? {
