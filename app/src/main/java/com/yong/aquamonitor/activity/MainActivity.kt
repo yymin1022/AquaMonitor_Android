@@ -1,4 +1,4 @@
-package com.yong.aquamonitor
+package com.yong.aquamonitor.activity
 
 import android.content.Context
 import android.content.Intent
@@ -24,6 +24,7 @@ import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Volume
 import androidx.lifecycle.lifecycleScope
+import com.yong.aquamonitor.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

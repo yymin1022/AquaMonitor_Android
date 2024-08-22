@@ -1,4 +1,4 @@
-package com.yong.aquamonitor
+package com.yong.aquamonitor.service
 
 import android.app.Service
 import android.content.Intent
