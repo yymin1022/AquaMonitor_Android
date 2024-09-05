@@ -3,13 +3,17 @@ package com.yong.aquamonitor.activity
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -18,9 +22,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.adapter.BleScanRecyclerAdapter
+import com.yong.aquamonitor.service.BleService
 import com.yong.aquamonitor.util.Logger
 
 class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickListener {
@@ -34,6 +40,25 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
     private var bleRecyclerAdapter: BleScanRecyclerAdapter? = null
 
     private var isBleScanning = false
+    private var bleCommandService: BleService? = null
+    private var bleDeviceAddress: String? = null
+    private var isServiceBinded = false
+
+    private val bleCommandServiceConnection = object: ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val serviceBinder = service as BleService.LocalBinder
+            bleCommandService = serviceBinder.getService()
+            isServiceBinded = true
+            bleDeviceAddress?.let { id ->
+                Logger.LogI("Connecting to [$id]...")
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            bleCommandService = null
+            isServiceBinded = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +79,12 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         btnStopScan!!.setOnClickListener(btnListener)
 
         progressBar!!.visibility = View.INVISIBLE
+
+        bleAdapter = (getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
+        bleRecyclerAdapter = BleScanRecyclerAdapter(bleDevices, this)
+
+        recyclerView!!.adapter = bleRecyclerAdapter
+        recyclerView!!.layoutManager = LinearLayoutManager(applicationContext)
     }
 
     private fun startScan() {
@@ -66,14 +97,14 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         if(!isBleScanning) {
             Logger.LogI("BLE Scan Started")
             isBleScanning = true
+            bleRecyclerAdapter!!.notifyItemRangeRemoved(0, bleDevices.size)
+            bleDevices.clear()
+
             bleAdapter!!.startDiscovery()
 
             val intentFilter = IntentFilter()
             intentFilter.addAction(BluetoothDevice.ACTION_FOUND)
-            registerReceiver(broadCastReceiver,intentFilter)
-
-            bleRecyclerAdapter!!.notifyItemRangeRemoved(0, bleDevices.size)
-            bleDevices.clear()
+            registerReceiver(bleScanReceiver, intentFilter)
 
             progressBar!!.visibility = View.VISIBLE
         }
@@ -83,6 +114,8 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         if(isBleScanning) {
             Logger.LogI("BLE Scan Stopped")
             isBleScanning = false
+
+            unregisterReceiver(bleScanReceiver)
 
             progressBar!!.visibility = View.INVISIBLE
         }
@@ -95,7 +128,7 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         }
     }
 
-    private val broadCastReceiver = object : BroadcastReceiver(){
+    private val bleScanReceiver = object : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
             when(intent?.action){
                 BluetoothDevice.ACTION_FOUND -> {
@@ -111,6 +144,7 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
                         @Suppress("DEPRECATION")
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     }
+
                     if(btDevice != null) {
                         Logger.LogD("Bluetooth device discovered. (name = ${btDevice.name},address = ${btDevice.address})")
                         if(btDevice.name != null) {
@@ -126,8 +160,10 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
     override fun onItemClick(device: Pair<String, String>) {
         stopScan()
 
-        val intent = Intent(applicationContext, ConnectActivity::class.java)
-        intent.putExtra("BLE_DEVICE_ADDRESS", device.second)
-        startActivity(intent)
+        val serviceIntent = Intent(applicationContext, BleService::class.java)
+        startService(serviceIntent)
+
+        bleDeviceAddress = device.second
+        bindService(serviceIntent, bleCommandServiceConnection, Context.BIND_AUTO_CREATE)
     }
 }
