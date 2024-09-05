@@ -91,6 +91,8 @@ class MainActivity : AppCompatActivity() {
         val lastMac = getLastMac()
         if(lastMac != null) {
             tryConnect(lastMac)
+        } else {
+            startActivity(Intent(applicationContext, ConnectActivity::class.java))
         }
     }
 
