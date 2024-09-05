@@ -25,6 +25,7 @@ import androidx.health.connect.client.units.Volume
 import androidx.lifecycle.lifecycleScope
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.util.Logger
+import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -86,6 +87,19 @@ class MainActivity : AppCompatActivity() {
 
         Logger.LogI("Successfully Initialized Application")
         getCurrentHydration()
+
+        val lastMac = getLastMac()
+        if(lastMac != null) {
+            tryConnect(lastMac)
+        }
+    }
+
+    private fun getLastMac(): String? {
+        return PreferenceUtil.getLastMacAddress(applicationContext)
+    }
+
+    private fun tryConnect(mac: String) {
+
     }
 
     private fun getCurrentHydration() {
