@@ -21,9 +21,9 @@ import java.util.UUID
 
 class BleService: Service() {
     companion object {
-        const val UUID_CHARACTERISTIC = "00000000-0000-0000-0000-008000000000"
-        const val UUID_DESCRIPTOR = "00000000-0000-0000-0000-008000000000"
-        const val UUID_SERVICE = "00000000-0000-0000-0000-008000000000"
+        const val UUID_CHARACTERISTIC = "0000ffe1-0000-1000-8000-00805f9b34fb"
+        const val UUID_DESCRIPTOR = "00002901-0000-1000-8000-00805f9b34fb"
+        const val UUID_SERVICE = "0000ffe0-0000-1000-8000-00805f9b34fb"
     }
 
     private var bleAdapter: BluetoothAdapter? = null
