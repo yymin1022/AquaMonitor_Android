@@ -21,12 +21,12 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Scan"
+        android:text="Stop Scan"
         android:id="@+id/connect_btn_stop"
         app:layout_constraintBottom_toTopOf="@id/connect_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="connect_btn_start" />
+        app:layout_constraintTop_toBottomOf="@id/connect_btn_start" />
 
     <ProgressBar
         android:layout_width="match_parent"
