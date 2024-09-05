@@ -40,22 +40,23 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
     private var bleRecyclerAdapter: BleScanRecyclerAdapter? = null
 
     private var isBleScanning = false
-    private var bleCommandService: BleService? = null
+    private var bleService: BleService? = null
     private var bleDeviceAddress: String? = null
     private var isServiceBinded = false
 
-    private val bleCommandServiceConnection = object: ServiceConnection {
+    private val bleServiceConnection = object: ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val serviceBinder = service as BleService.LocalBinder
-            bleCommandService = serviceBinder.getService()
+            bleService = serviceBinder.getService()
             isServiceBinded = true
             bleDeviceAddress?.let { id ->
                 Logger.LogI("Connecting to [$id]...")
+                bleService!!.connectBle(id)
             }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            bleCommandService = null
+            bleService = null
             isServiceBinded = false
         }
     }
@@ -97,14 +98,14 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         if(!isBleScanning) {
             Logger.LogI("BLE Scan Started")
             isBleScanning = true
-            bleRecyclerAdapter!!.notifyItemRangeRemoved(0, bleDevices.size)
-            bleDevices.clear()
-
             bleAdapter!!.startDiscovery()
 
             val intentFilter = IntentFilter()
             intentFilter.addAction(BluetoothDevice.ACTION_FOUND)
             registerReceiver(bleScanReceiver, intentFilter)
+
+            bleRecyclerAdapter!!.notifyItemRangeRemoved(0, bleDevices.size)
+            bleDevices.clear()
 
             progressBar!!.visibility = View.VISIBLE
         }
@@ -132,6 +133,7 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         override fun onReceive(context: Context?, intent: Intent?) {
             when(intent?.action){
                 BluetoothDevice.ACTION_FOUND -> {
+                    Logger.LogD("AAAAAAAAAAAAA")
                     if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.BLUETOOTH_SCAN)
                         != PackageManager.PERMISSION_GRANTED) {
                         Logger.LogI("Bluetooth / Location Permission is Not Granted")
@@ -164,6 +166,6 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         startService(serviceIntent)
 
         bleDeviceAddress = device.second
-        bindService(serviceIntent, bleCommandServiceConnection, Context.BIND_AUTO_CREATE)
+        bindService(serviceIntent, bleServiceConnection, Context.BIND_AUTO_CREATE)
     }
 }
