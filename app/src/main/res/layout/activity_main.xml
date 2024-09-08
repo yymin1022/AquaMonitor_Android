@@ -41,7 +41,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send to HealthConnect"
+        android:text="Request Data"
         android:id="@+id/main_btn_ble_request_update"
         app:layout_constraintBottom_toTopOf="@id/main_btn_ble_request_reset"
         app:layout_constraintEnd_toEndOf="parent"
