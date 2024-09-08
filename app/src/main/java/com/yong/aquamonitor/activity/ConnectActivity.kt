@@ -133,7 +133,6 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         override fun onReceive(context: Context?, intent: Intent?) {
             when(intent?.action){
                 BluetoothDevice.ACTION_FOUND -> {
-                    Logger.LogD("AAAAAAAAAAAAA")
                     if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.BLUETOOTH_SCAN)
                         != PackageManager.PERMISSION_GRANTED) {
                         Logger.LogI("Bluetooth / Location Permission is Not Granted")
