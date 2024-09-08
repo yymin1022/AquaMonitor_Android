@@ -52,6 +52,7 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
             bleDeviceAddress?.let { id ->
                 Logger.LogI("Connecting to [$id]...")
                 bleService!!.connectBle(id)
+                finish()
             }
         }
 
