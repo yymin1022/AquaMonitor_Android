@@ -151,7 +151,8 @@ class BleService: Service() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
             @Suppress("DEPRECATION") val data = characteristic.value?.toString(Charsets.UTF_8)
             if(data != null) {
-                Logger.LogI("Message Received: [$data]")
+                val dataList = data.split("\n").map { value -> value.trim() }
+                Logger.LogI("Message Received: [${dataList[0]} / ${dataList[1]}]")
             }
         }
     }
