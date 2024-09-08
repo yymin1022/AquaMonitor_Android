@@ -28,6 +28,7 @@ import com.yong.aquamonitor.R
 import com.yong.aquamonitor.adapter.BleScanRecyclerAdapter
 import com.yong.aquamonitor.service.BleService
 import com.yong.aquamonitor.util.Logger
+import com.yong.aquamonitor.util.PreferenceUtil
 
 class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickListener {
     private var btnStartScan: Button? = null
@@ -170,6 +171,8 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
 
     override fun onItemClick(device: Pair<String, String>) {
         stopScan()
+
+        PreferenceUtil.setMacAddress(applicationContext, device.second)
 
         val serviceIntent = Intent(applicationContext, BleService::class.java)
         startService(serviceIntent)
