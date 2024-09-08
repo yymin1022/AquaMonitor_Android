@@ -63,6 +63,40 @@ class BleService: Service() {
         return true
     }
 
+    @Suppress("DEPRECATION")
+    fun requestData(data: String) {
+        if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.BLUETOOTH_SCAN)
+            != PackageManager.PERMISSION_GRANTED) {
+            Logger.LogI("Bluetooth / Location Permission is Not Granted")
+            return
+        }
+
+        try {
+            bleGatt?.let { gatt ->
+                val service = gatt.getService(UUID.fromString(UUID_SERVICE))
+                if(service == null) {
+                    Logger.LogE("Service Not Found")
+                }
+
+                val characteristic = service?.getCharacteristic(UUID.fromString(UUID_CHARACTERISTIC))
+                if(characteristic != null) {
+                    val value = data.toByteArray(Charsets.UTF_8)
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        gatt.writeCharacteristic(characteristic, value, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
+                    } else {
+                        characteristic.value = value
+                        gatt.writeCharacteristic(characteristic)
+                    }
+                    Logger.LogI("Message [${value.contentToString()}] sent")
+                } else {
+                    Logger.LogE("Characteristic Not Found")
+                }
+            }
+        } catch(e: Exception) {
+            Logger.LogE("Write Error: $e")
+        }
+    }
+
     private val gattCallback = object: BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.BLUETOOTH_SCAN)
