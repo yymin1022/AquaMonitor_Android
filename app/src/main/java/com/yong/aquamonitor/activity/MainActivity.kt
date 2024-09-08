@@ -40,12 +40,11 @@ import java.time.ZoneOffset
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
-    private val PERMISSION_LIST = setOf(
+    private var healthConnectClient: HealthConnectClient? = null
+    private val healthPermissionList = setOf(
         HealthPermission.getReadPermission(HydrationRecord::class),
         HealthPermission.getWritePermission(HydrationRecord::class)
     )
-
-    private var healthConnectClient: HealthConnectClient? = null
 
     private var btnSend: Button? = null
     private var inputValue: EditText? = null
@@ -97,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         var permissionFlag = false
         val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
         val requestPermissions = registerForActivityResult(requestPermissionActivityContract) { granted ->
-            if (granted.containsAll(PERMISSION_LIST)) {
+            if (granted.containsAll(healthPermissionList)) {
                 permissionFlag = true
             } else {
                 Logger.LogE("Health Connect Permission is not Granted")
@@ -217,8 +216,8 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun checkPermissionsAndRun(requestPermissions: ActivityResultLauncher<Set<String>>, healthConnectClient: HealthConnectClient) {
         val granted = healthConnectClient.permissionController.getGrantedPermissions()
-        if(!granted.containsAll(PERMISSION_LIST)) {
-            requestPermissions.launch(PERMISSION_LIST)
+        if(!granted.containsAll(healthPermissionList)) {
+            requestPermissions.launch(healthPermissionList)
         }
     }
 
