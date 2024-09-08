@@ -64,7 +64,7 @@ class BleService: Service() {
     }
 
     @Suppress("DEPRECATION")
-    fun requestData(data: String) {
+    fun writeMessage(data: String) {
         if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.BLUETOOTH_SCAN)
             != PackageManager.PERMISSION_GRANTED) {
             Logger.LogI("Bluetooth / Location Permission is Not Granted")
