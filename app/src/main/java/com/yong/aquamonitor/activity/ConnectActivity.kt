@@ -88,6 +88,15 @@ class ConnectActivity: AppCompatActivity(), BleScanRecyclerAdapter.OnItemClickLi
         recyclerView!!.layoutManager = LinearLayoutManager(applicationContext)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if(isServiceBinded){
+            unbindService(bleServiceConnection)
+            isServiceBinded = false
+        }
+    }
+
     private fun startScan() {
         if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.BLUETOOTH_SCAN)
             != PackageManager.PERMISSION_GRANTED) {
