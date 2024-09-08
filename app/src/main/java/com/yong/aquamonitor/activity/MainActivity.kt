@@ -1,9 +1,12 @@
 package com.yong.aquamonitor.activity
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -24,6 +27,7 @@ import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Volume
 import androidx.lifecycle.lifecycleScope
 import com.yong.aquamonitor.R
+import com.yong.aquamonitor.service.BleService
 import com.yong.aquamonitor.util.Logger
 import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.CoroutineScope
@@ -46,6 +50,27 @@ class MainActivity : AppCompatActivity() {
     private var btnSend: Button? = null
     private var inputValue: EditText? = null
     private var tvValue: TextView? = null
+
+    private var bleService: BleService? = null
+    private var bleDeviceAddress: String? = null
+    private var isServiceBinded = false
+
+    private val bleServiceConnection = object: ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val serviceBinder = service as BleService.LocalBinder
+            bleService = serviceBinder.getService()
+            isServiceBinded = true
+            bleDeviceAddress?.let { id ->
+                Logger.LogI("Connecting to [$id]...")
+                bleService!!.connectBle(id)
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            bleService = null
+            isServiceBinded = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,12 +121,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if(isServiceBinded) {
+            unbindService(bleServiceConnection)
+            isServiceBinded = false
+        }
+    }
+
     private fun getLastMac(): String? {
         return PreferenceUtil.getLastMacAddress(applicationContext)
     }
 
     private fun tryConnect(mac: String) {
+        val serviceIntent = Intent(applicationContext, BleService::class.java)
+        startService(serviceIntent)
 
+        bleDeviceAddress = mac
+        bindService(serviceIntent, bleServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun getCurrentHydration() {
