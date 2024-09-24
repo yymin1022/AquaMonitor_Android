@@ -1,8 +1,10 @@
 package com.yong.aquamonitor.activity
 
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
@@ -20,6 +22,7 @@ import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.HydrationRecord
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.service.BleService
 import com.yong.aquamonitor.util.HealthConnectUtil
@@ -45,8 +48,10 @@ class MainActivity : AppCompatActivity() {
     private var btnReqUpdate: Button? = null
     private var btnSend: Button? = null
     private var inputValue: EditText? = null
+    private var tvConnectStatus: TextView? = null
     private var tvValue: TextView? = null
 
+    private val bleReceiver = BleReceiver()
     private var bleService: BleService? = null
     private var bleDeviceAddress: String? = null
     private var isServiceBinded = false
@@ -59,6 +64,7 @@ class MainActivity : AppCompatActivity() {
             bleDeviceAddress?.let { id ->
                 Logger.LogI("Connecting to [$id]...")
                 bleService!!.connectBle(id)
+                tvConnectStatus!!.text = String.format("Connecting to [%s]...", id)
             }
         }
 
@@ -83,6 +89,7 @@ class MainActivity : AppCompatActivity() {
         btnReqUpdate = findViewById(R.id.main_btn_ble_request_update)
         btnSend = findViewById(R.id.main_btn_send)
         inputValue = findViewById(R.id.main_input_value)
+        tvConnectStatus = findViewById(R.id.main_text_connect_status)
         tvValue = findViewById(R.id.main_text_value)
         btnConnectNew!!.setOnClickListener(btnListener)
         btnReqReset!!.setOnClickListener(btnListener)
@@ -111,10 +118,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         Logger.LogI("Successfully Initialized Application")
-        lifecycleScope.launch {
-            val hydrationValue = getCurrentHydration(applicationContext)
-            tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: -1.0)
+        readHydrationValue()
+
+        val bleReceiverFilter = IntentFilter().apply {
+            addAction(BleService.ACTION_BLE_CONNECTED)
+            addAction(BleService.ACTION_BLE_DATA_RECEIVED)
         }
+        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(bleReceiver, bleReceiverFilter)
 
         val lastMac = getLastMac()
         if(lastMac != null) {
@@ -127,9 +137,17 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(bleReceiver)
         if(isServiceBinded) {
             unbindService(bleServiceConnection)
             isServiceBinded = false
+        }
+    }
+
+    private fun readHydrationValue() {
+        lifecycleScope.launch {
+            val hydrationValue = getCurrentHydration(applicationContext)
+            tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: -1.0)
         }
     }
 
@@ -169,8 +187,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     withContext(Dispatchers.Main) {
-                        val hydrationValue = getCurrentHydration(applicationContext)
-                        tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: -1.0)
+                        readHydrationValue()
                     }
                 }
             }
@@ -181,6 +198,25 @@ class MainActivity : AppCompatActivity() {
         val granted = healthConnectClient.permissionController.getGrantedPermissions()
         if(!granted.containsAll(healthPermissionList)) {
             requestPermissions.launch(healthPermissionList)
+        }
+    }
+
+    inner class BleReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if(intent != null) {
+                Logger.LogD(intent.action.toString())
+                when(intent.action) {
+                    BleService.ACTION_BLE_CONNECTED -> {
+                        tvConnectStatus!!.text = String.format("Connected to [%s]", intent.getStringExtra("DEVICE_MAC"))
+                    }
+
+                    BleService.ACTION_BLE_DATA_RECEIVED -> {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            readHydrationValue()
+                        }
+                    }
+                }
+            }
         }
     }
 }
