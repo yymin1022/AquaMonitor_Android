@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         HealthPermission.getWritePermission(HydrationRecord::class)
     )
 
+    private var btnConnectNew: Button? = null
     private var btnReqReset: Button? = null
     private var btnReqUpdate: Button? = null
     private var btnSend: Button? = null
@@ -77,11 +78,13 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        btnConnectNew = findViewById(R.id.main_btn_connect_new)
         btnReqReset = findViewById(R.id.main_btn_ble_request_reset)
         btnReqUpdate = findViewById(R.id.main_btn_ble_request_update)
         btnSend = findViewById(R.id.main_btn_send)
         inputValue = findViewById(R.id.main_input_value)
         tvValue = findViewById(R.id.main_text_value)
+        btnConnectNew!!.setOnClickListener(btnListener)
         btnReqReset!!.setOnClickListener(btnListener)
         btnReqUpdate!!.setOnClickListener(btnListener)
         btnSend!!.setOnClickListener(btnListener)
@@ -144,6 +147,10 @@ class MainActivity : AppCompatActivity() {
 
     private val btnListener = View.OnClickListener { view ->
         when(view.id) {
+            R.id.main_btn_connect_new -> {
+                startActivity(Intent(this, ConnectActivity::class.java))
+            }
+
             R.id.main_btn_ble_request_reset -> {
                 bleService?.writeMessage("R")
             }
