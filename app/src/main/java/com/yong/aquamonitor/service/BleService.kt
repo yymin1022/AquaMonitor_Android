@@ -16,11 +16,15 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.ActivityCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.yong.aquamonitor.util.Logger
 import java.util.UUID
 
 class BleService: Service() {
     companion object {
+        const val ACTION_BLE_CONNECTED = "AQUAMONITOR_CONNECTED"
+        const val ACTION_BLE_DATA_RECEIVED = "AQUAMONITOR_DATA_RECEIVED"
+
         const val UUID_CHARACTERISTIC = "0000ffe1-0000-1000-8000-00805f9b34fb"
         const val UUID_DESCRIPTOR = "00002901-0000-1000-8000-00805f9b34fb"
         const val UUID_SERVICE = "0000ffe0-0000-1000-8000-00805f9b34fb"
@@ -46,7 +50,7 @@ class BleService: Service() {
         Logger.LogD("Stopped")
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder {
         return binder
     }
 
@@ -108,6 +112,11 @@ class BleService: Service() {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Logger.LogI("Device Connected")
                 gatt.discoverServices()
+
+                val intent = Intent(ACTION_BLE_CONNECTED).apply {
+                    putExtra("DEVICE_MAC", gatt.device!!.address)
+                }
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Logger.LogI("Device Disconnected")
                 bleGatt = null
@@ -153,6 +162,8 @@ class BleService: Service() {
             if(data != null) {
                 val dataList = data.split("\n").map { value -> value.trim() }
                 Logger.LogI("Message Received: [${dataList[0]} / ${dataList[1]}]")
+
+                sendBroadcast(Intent(ACTION_BLE_CONNECTED))
             }
         }
     }
