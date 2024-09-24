@@ -53,9 +53,19 @@
         android:layout_height="wrap_content"
         android:text="Reset AquaMonitor Device"
         android:id="@+id/main_btn_ble_request_reset"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_btn_connect_new"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_btn_ble_request_update" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Connect New AquaMonitor Device"
+        android:id="@+id/main_btn_connect_new"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_btn_ble_request_reset" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
