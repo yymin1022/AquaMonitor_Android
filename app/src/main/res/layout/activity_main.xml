@@ -63,9 +63,20 @@
         android:layout_height="wrap_content"
         android:text="Connect New AquaMonitor Device"
         android:id="@+id/main_btn_connect_new"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_text_connect_status"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_btn_ble_request_reset" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Not Connected"
+        android:textSize="15sp"
+        android:id="@+id/main_text_connect_status"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_btn_connect_new" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
