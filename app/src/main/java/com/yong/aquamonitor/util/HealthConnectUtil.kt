@@ -5,8 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.HydrationRecord
-import androidx.health.connect.client.records.metadata.DataOrigin
-import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Volume
@@ -66,11 +64,7 @@ object HealthConnectUtil {
                 startTime = Instant.ofEpochMilli(data.timeFrom),
                 endTime = Instant.ofEpochMilli(data.timeTo),
                 startZoneOffset = ZoneOffset.MIN,
-                endZoneOffset = ZoneOffset.MIN,
-                metadata = Metadata(
-                    id = Instant.ofEpochMilli(data.timeFrom).toString(),
-                    dataOrigin = DataOrigin("com.yong.aquamonitor"),
-                    lastModifiedTime = Instant.ofEpochMilli(data.timeTo))
+                endZoneOffset = ZoneOffset.MIN
             )
             val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
             for(res in insertResult.recordIdsList) {
