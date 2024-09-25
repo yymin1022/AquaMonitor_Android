@@ -30,6 +30,10 @@ class BleService: Service() {
         const val UUID_SERVICE = "0000ffe0-0000-1000-8000-00805f9b34fb"
     }
 
+    private var aquaCurCycle = -1
+    private var aquaCurStartTime = 0L
+    private var aquaCurValue = 0.0
+
     private var bleAdapter: BluetoothAdapter? = null
     private var bleGatt: BluetoothGatt? = null
 
@@ -101,6 +105,31 @@ class BleService: Service() {
         }
     }
 
+    private fun processData(cycle: Int, value: Double) {
+        if(aquaCurCycle < 0) {
+            aquaCurCycle = cycle
+            aquaCurStartTime = System.currentTimeMillis()
+            aquaCurValue = value
+        } else if(aquaCurCycle == cycle) {
+            aquaCurValue = value
+        } else {
+            saveData(cycle, value)
+        }
+    }
+
+    private fun saveData(cycle: Int, value: Double) {
+        val curTime = System.currentTimeMillis()
+        // TODO: Make DataClass and Save as Preference
+        // Cycle: aquaCurCycle
+        // TimeFrom: aquaCurStartTime
+        // TimeTo: curTime
+        // Value: aquaCurValue
+
+        aquaCurCycle = cycle
+        aquaCurStartTime = curTime
+        aquaCurValue = value
+    }
+
     private val gattCallback = object: BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.BLUETOOTH_SCAN)
@@ -161,8 +190,12 @@ class BleService: Service() {
             @Suppress("DEPRECATION") val data = characteristic.value?.toString(Charsets.UTF_8)
             if(data != null) {
                 val dataList = data.split("\n").map { value -> value.trim() }
-                Logger.LogI("Message Received: [${dataList[0]} / ${dataList[1]}]")
 
+                val receivedCycle = dataList[0].toInt()
+                val receivedValue = dataList[1].toDouble()
+                Logger.LogI("Message Received: [${receivedCycle} / ${receivedValue}]")
+
+                processData(receivedCycle, receivedValue)
                 sendBroadcast(Intent(ACTION_BLE_CONNECTED))
             }
         }
