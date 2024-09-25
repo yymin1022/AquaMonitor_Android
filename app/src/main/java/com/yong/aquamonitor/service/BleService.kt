@@ -129,12 +129,13 @@ class BleService: Service() {
         val curTime = System.currentTimeMillis()
         val tmpData = AquaMonitorData(aquaCurCycle, aquaCurValue, aquaCurStartTime, curTime, null, null)
 
-        val savedID = HealthConnectUtil.updateHydration(tmpData, applicationContext)
+        val savedID = HealthConnectUtil.updateHydration(tmpData, applicationContext) ?: return
         tmpData.id = savedID
 
         PreferenceUtil.saveHealthData(tmpData, applicationContext)
         Logger.LogD("Saved Data with ID [$savedID]: $tmpData")
-
+        Logger.LogD("Restored Data from Saved with ID [$savedID]: ${PreferenceUtil.getHealthData(savedID, applicationContext)}")
+        
         aquaCurCycle = cycle
         aquaCurStartTime = curTime
         aquaCurValue = value
