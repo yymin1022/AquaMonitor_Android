@@ -12,6 +12,15 @@ object PreferenceUtil {
         }
     }
 
+    fun getHealthData(id: String, context: Context): AquaMonitorData? {
+        initPreference(context)
+        return null
+    }
+
+    fun saveHealthData(data: AquaMonitorData, context: Context) {
+        initPreference(context)
+    }
+
     fun getLastMacAddress(context: Context): String? {
         initPreference(context)
         return pref!!.getString("MAC_ADDRESS", null)
