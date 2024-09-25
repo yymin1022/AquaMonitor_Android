@@ -15,8 +15,10 @@ import android.content.pm.PackageManager
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.yong.aquamonitor.util.AquaMonitorData
 import com.yong.aquamonitor.util.Logger
 import java.util.UUID
 
@@ -124,6 +126,9 @@ class BleService: Service() {
         // TimeFrom: aquaCurStartTime
         // TimeTo: curTime
         // Value: aquaCurValue
+
+        val tmpData = AquaMonitorData(aquaCurCycle, aquaCurValue, aquaCurStartTime, curTime, null)
+        Logger.LogD("Saved Data: $tmpData")
 
         aquaCurCycle = cycle
         aquaCurStartTime = curTime
