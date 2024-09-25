@@ -55,22 +55,22 @@ object HealthConnectUtil {
         return hydrationValue
     }
 
-    suspend fun updateHydration(value: Int, context: Context) {
+    suspend fun updateHydration(data: AquaMonitorData, context: Context) {
         initHealthConnect(context)
 
-        Logger.LogI("Updating Current Value with $value...")
+        Logger.LogI("Updating Current Value with ${data.value}...")
 
         try {
             val hydrationRecord = HydrationRecord(
-                volume = Volume.milliliters(value.toDouble()),
-                startTime = Instant.now(),
-                endTime = Instant.now(),
+                volume = Volume.milliliters(data.value),
+                startTime = Instant.ofEpochMilli(data.timeFrom),
+                endTime = Instant.ofEpochMilli(data.timeTo),
                 startZoneOffset = ZoneOffset.MIN,
                 endZoneOffset = ZoneOffset.MIN,
                 metadata = Metadata(
-                    id = Instant.now().toString(),
+                    id = Instant.ofEpochMilli(data.timeFrom).toString(),
                     DataOrigin("com.yong.aquamonitor"),
-                    Instant.now())
+                    Instant.ofEpochMilli(data.timeTo))
             )
             val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
             for(res in insertResult.recordIdsList) {
