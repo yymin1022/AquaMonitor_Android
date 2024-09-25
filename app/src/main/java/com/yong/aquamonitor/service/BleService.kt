@@ -126,9 +126,13 @@ class BleService: Service() {
 
     private suspend fun saveData(cycle: Int, value: Double) {
         val curTime = System.currentTimeMillis()
-        val tmpData = AquaMonitorData(aquaCurCycle, aquaCurValue, aquaCurStartTime, curTime, null)
-        HealthConnectUtil.updateHydration(tmpData, applicationContext)
-        Logger.LogD("Saved Data: $tmpData")
+        val tmpData = AquaMonitorData(aquaCurCycle, aquaCurValue, aquaCurStartTime, curTime, null, null)
+
+        val savedID = HealthConnectUtil.updateHydration(tmpData, applicationContext)
+        tmpData.id = savedID
+
+        Logger.LogD("Saved Data with ID [$savedID]: $tmpData")
+        // TODO: Save as Preference/DB
 
         aquaCurCycle = cycle
         aquaCurStartTime = curTime
