@@ -55,7 +55,7 @@ object HealthConnectUtil {
         return hydrationValue
     }
 
-    suspend fun updateHydration(data: AquaMonitorData, context: Context) {
+    suspend fun updateHydration(data: AquaMonitorData, context: Context): String? {
         initHealthConnect(context)
 
         Logger.LogI("Updating Current Value with ${data.value}...")
@@ -74,11 +74,13 @@ object HealthConnectUtil {
             )
             val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
             for(res in insertResult.recordIdsList) {
-                Logger.LogI("Inserted $res")
+                return res
             }
         } catch(e: Exception) {
             Logger.LogE("Health Connect Set Error: [$e]")
         }
+
+        return null
     }
 
     fun isHealthConnectAvail(context: Context): Boolean {
