@@ -69,8 +69,8 @@ object HealthConnectUtil {
                 endZoneOffset = ZoneOffset.MIN,
                 metadata = Metadata(
                     id = Instant.ofEpochMilli(data.timeFrom).toString(),
-                    DataOrigin("com.yong.aquamonitor"),
-                    Instant.ofEpochMilli(data.timeTo))
+                    dataOrigin = DataOrigin("com.yong.aquamonitor"),
+                    lastModifiedTime = Instant.ofEpochMilli(data.timeTo))
             )
             val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
             for(res in insertResult.recordIdsList) {
