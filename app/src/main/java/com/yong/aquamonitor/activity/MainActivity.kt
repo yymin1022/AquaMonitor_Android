@@ -183,11 +183,12 @@ class MainActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO) {
                         try {
                             val tmpData = AquaMonitorData(0, inputValue!!.text.toString().toDouble(), System.currentTimeMillis() - 1, System.currentTimeMillis(), null, null)
-                            val savedID = updateHydration(tmpData, applicationContext)
+                            val savedID = updateHydration(tmpData, applicationContext) ?: return@withContext
                             tmpData.id = savedID
 
                             PreferenceUtil.saveHealthData(tmpData, applicationContext)
                             Logger.LogD("Saved Data with ID [$savedID]: $tmpData")
+                            Logger.LogD("Restored Data from Saved with ID [$savedID]: ${PreferenceUtil.getHealthData(savedID, applicationContext)}")
                         } catch(e: NumberFormatException) {
                             Logger.LogE("Failed to get Hydration Value Input")
                         }
