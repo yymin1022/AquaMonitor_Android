@@ -196,7 +196,7 @@ class BleService: Service() {
                 Logger.LogI("Message Received: [${receivedCycle} / ${receivedValue}]")
 
                 processData(receivedCycle, receivedValue)
-                sendBroadcast(Intent(ACTION_BLE_CONNECTED))
+                sendBroadcast(Intent(ACTION_BLE_DATA_RECEIVED))
             }
         }
     }
