@@ -182,8 +182,11 @@ class MainActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
                         try {
-                            val tmpData = AquaMonitorData(0, inputValue!!.text.toString().toDouble(), System.currentTimeMillis() - 1, System.currentTimeMillis(), null)
-                            updateHydration(tmpData, applicationContext)
+                            val tmpData = AquaMonitorData(0, inputValue!!.text.toString().toDouble(), System.currentTimeMillis() - 1, System.currentTimeMillis(), null, null)
+                            val savedID = updateHydration(tmpData, applicationContext)
+                            tmpData.id = savedID
+
+                            Logger.LogD("Saved Data with ID [$savedID]: $tmpData")
                         } catch(e: NumberFormatException) {
                             Logger.LogE("Failed to get Hydration Value Input")
                         }
