@@ -15,11 +15,14 @@ import android.content.pm.PackageManager
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.yong.aquamonitor.util.AquaMonitorData
+import com.yong.aquamonitor.util.HealthConnectUtil
 import com.yong.aquamonitor.util.Logger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class BleService: Service() {
@@ -115,19 +118,16 @@ class BleService: Service() {
         } else if(aquaCurCycle == cycle) {
             aquaCurValue = value
         } else {
-            saveData(cycle, value)
+            CoroutineScope(Dispatchers.IO).launch {
+                saveData(cycle, value)
+            }
         }
     }
 
-    private fun saveData(cycle: Int, value: Double) {
+    private suspend fun saveData(cycle: Int, value: Double) {
         val curTime = System.currentTimeMillis()
-        // TODO: Make DataClass and Save as Preference
-        // Cycle: aquaCurCycle
-        // TimeFrom: aquaCurStartTime
-        // TimeTo: curTime
-        // Value: aquaCurValue
-
         val tmpData = AquaMonitorData(aquaCurCycle, aquaCurValue, aquaCurStartTime, curTime, null)
+        HealthConnectUtil.updateHydration(tmpData, applicationContext)
         Logger.LogD("Saved Data: $tmpData")
 
         aquaCurCycle = cycle
