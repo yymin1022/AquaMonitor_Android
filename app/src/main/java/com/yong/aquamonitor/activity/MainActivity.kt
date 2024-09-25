@@ -186,6 +186,7 @@ class MainActivity : AppCompatActivity() {
                             val savedID = updateHydration(tmpData, applicationContext)
                             tmpData.id = savedID
 
+                            PreferenceUtil.saveHealthData(tmpData, applicationContext)
                             Logger.LogD("Saved Data with ID [$savedID]: $tmpData")
                         } catch(e: NumberFormatException) {
                             Logger.LogE("Failed to get Hydration Value Input")
