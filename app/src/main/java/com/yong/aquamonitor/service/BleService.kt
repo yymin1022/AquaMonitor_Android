@@ -20,6 +20,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.yong.aquamonitor.util.AquaMonitorData
 import com.yong.aquamonitor.util.HealthConnectUtil
 import com.yong.aquamonitor.util.Logger
+import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -131,8 +132,8 @@ class BleService: Service() {
         val savedID = HealthConnectUtil.updateHydration(tmpData, applicationContext)
         tmpData.id = savedID
 
+        PreferenceUtil.saveHealthData(tmpData, applicationContext)
         Logger.LogD("Saved Data with ID [$savedID]: $tmpData")
-        // TODO: Save as Preference/DB
 
         aquaCurCycle = cycle
         aquaCurStartTime = curTime
