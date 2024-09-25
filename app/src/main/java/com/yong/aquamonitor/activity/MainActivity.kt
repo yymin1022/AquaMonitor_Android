@@ -25,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.service.BleService
+import com.yong.aquamonitor.util.AquaMonitorData
 import com.yong.aquamonitor.util.HealthConnectUtil
 import com.yong.aquamonitor.util.HealthConnectUtil.getCurrentHydration
 import com.yong.aquamonitor.util.HealthConnectUtil.isHealthConnectAvail
@@ -181,7 +182,8 @@ class MainActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
                         try {
-                            updateHydration(inputValue!!.text.toString().toInt(), applicationContext)
+                            val tmpData = AquaMonitorData(0, inputValue!!.text.toString().toDouble(), System.currentTimeMillis() - 1, System.currentTimeMillis(), null)
+                            updateHydration(tmpData, applicationContext)
                         } catch(e: NumberFormatException) {
                             Logger.LogE("Failed to get Hydration Value Input")
                         }
