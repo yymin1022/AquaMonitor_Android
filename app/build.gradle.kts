@@ -44,6 +44,8 @@ dependencies {
 
     implementation(libs.androidx.connect.client)
 
+    implementation(libs.mpandroidchart)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
