@@ -200,7 +200,7 @@ class MainActivity : AppCompatActivity() {
     private fun readHydrationValue() {
         lifecycleScope.launch {
             val hydrationValue = getCurrentHydration(applicationContext)
-            tvValue!!.text = String.format(Locale.getDefault(), "Current Hydration Value : %.2f ml", hydrationValue?: -1.0)
+            tvValue!!.text = String.format(Locale.getDefault(), "%.0f%%", if(hydrationValue != null) hydrationValue / 20  else -1)
         }
     }
 
