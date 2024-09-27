@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.graphics.Color
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
@@ -23,6 +24,13 @@ import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.HydrationRecord
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.service.BleService
 import com.yong.aquamonitor.util.AquaMonitorData
@@ -38,6 +46,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
+
 class MainActivity : AppCompatActivity() {
     private val healthPermissionList = setOf(
         HealthPermission.getReadPermission(HydrationRecord::class),
@@ -48,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private var btnReqReset: Button? = null
     private var btnReqUpdate: Button? = null
     private var btnSend: Button? = null
+    private var chartView: PieChart? = null
     private var inputValue: EditText? = null
     private var tvConnectStatus: TextView? = null
     private var tvValue: TextView? = null
@@ -89,6 +99,7 @@ class MainActivity : AppCompatActivity() {
         btnReqReset = findViewById(R.id.main_btn_ble_request_reset)
         btnReqUpdate = findViewById(R.id.main_btn_ble_request_update)
         btnSend = findViewById(R.id.main_btn_send)
+        chartView = findViewById(R.id.main_pie_chart)
         inputValue = findViewById(R.id.main_input_value)
         tvConnectStatus = findViewById(R.id.main_text_connect_status)
         tvValue = findViewById(R.id.main_text_value)
@@ -133,6 +144,9 @@ class MainActivity : AppCompatActivity() {
         } else {
             startActivity(Intent(applicationContext, ConnectActivity::class.java))
         }
+
+        initChartView()
+        setChartView()
     }
 
     override fun onDestroy() {
@@ -142,6 +156,40 @@ class MainActivity : AppCompatActivity() {
         if(isServiceBinded) {
             unbindService(bleServiceConnection)
             isServiceBinded = false
+        }
+    }
+
+    private fun initChartView() {
+        chartView!!.setDrawEntryLabels(false)
+        chartView!!.description.isEnabled = false
+        chartView!!.holeRadius = 85f
+        chartView!!.isClickable = false
+        chartView!!.isRotationEnabled = false
+    }
+
+    private fun setChartView() {
+        lifecycleScope.launch {
+            val hydrationCoffee = 250f
+            val hydrationBeverage = 100f
+            val hydrationWater = 600f
+            val hydrationValue = (hydrationBeverage * 0.8f + hydrationCoffee * 0.9f + hydrationWater)
+
+            val chartValues = arrayListOf(
+                PieEntry(hydrationWater, "Water"),
+                PieEntry(hydrationCoffee, "Coffee"),
+                PieEntry(hydrationBeverage, "Beverage")
+            )
+            val dataSet = PieDataSet(chartValues, "Test Values")
+            dataSet.colors = listOf(
+                Color.valueOf(0.65f, 0.84f, 1f).toArgb(),
+                Color.valueOf(0.5f, 0.5f, 0.5f).toArgb(),
+                Color.valueOf(0f, 0f, 0f).toArgb()
+            )
+
+            chartView!!.setData(PieData(dataSet))
+            chartView!!.invalidate()
+
+            chartView!!.maxAngle = if(hydrationValue < 2000) hydrationValue * 360f / 2000 else 360f
         }
     }
 
