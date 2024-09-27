@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initChartView() {
         chartView!!.description.isEnabled = false
-        chartView!!.holeRadius = 85f
+        chartView!!.holeRadius = 90f
         chartView!!.isRotationEnabled = false
         chartView!!.legend.isEnabled = false
         chartView!!.setBackgroundColor(Color.TRANSPARENT)
