@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         HealthPermission.getWritePermission(HydrationRecord::class)
     )
 
-    private var btnConnectNew: Button? = null
+    private var btnConnectNew: ImageButton? = null
     private var btnReqReset: Button? = null
     private var btnReqUpdate: Button? = null
     private var chartView: PieChart? = null
