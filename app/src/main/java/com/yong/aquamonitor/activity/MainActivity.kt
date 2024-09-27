@@ -57,9 +57,7 @@ class MainActivity : AppCompatActivity() {
     private var btnConnectNew: Button? = null
     private var btnReqReset: Button? = null
     private var btnReqUpdate: Button? = null
-    private var btnSend: Button? = null
     private var chartView: PieChart? = null
-    private var inputValue: EditText? = null
     private var tvConnectStatus: TextView? = null
     private var tvValue: TextView? = null
 
@@ -99,15 +97,12 @@ class MainActivity : AppCompatActivity() {
         btnConnectNew = findViewById(R.id.main_btn_connect_new)
         btnReqReset = findViewById(R.id.main_btn_ble_request_reset)
         btnReqUpdate = findViewById(R.id.main_btn_ble_request_update)
-        btnSend = findViewById(R.id.main_btn_send)
         chartView = findViewById(R.id.main_pie_chart)
-        inputValue = findViewById(R.id.main_input_value)
         tvConnectStatus = findViewById(R.id.main_text_connect_status)
         tvValue = findViewById(R.id.main_text_value)
         btnConnectNew!!.setOnClickListener(btnListener)
         btnReqReset!!.setOnClickListener(btnListener)
         btnReqUpdate!!.setOnClickListener(btnListener)
-        btnSend!!.setOnClickListener(btnListener)
 
         if(!isHealthConnectAvail(applicationContext)) {
             Logger.LogE("Health Connect is not Available")
@@ -228,27 +223,6 @@ class MainActivity : AppCompatActivity() {
 
             R.id.main_btn_ble_request_update -> {
                 bleService?.writeMessage("U")
-            }
-
-            R.id.main_btn_send -> {
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        try {
-                            val tmpData = AquaMonitorData(0, inputValue!!.text.toString().toDouble(), System.currentTimeMillis() - 1, System.currentTimeMillis(), null, null)
-                            val savedID = updateHydration(tmpData, applicationContext) ?: return@withContext
-                            tmpData.id = savedID
-
-                            PreferenceUtil.saveHealthData(tmpData, applicationContext)
-                            Logger.LogD("Saved Data with ID [$savedID]: $tmpData")
-                            Logger.LogD("Restored Data from Saved with ID [$savedID]: ${PreferenceUtil.getHealthData(savedID, applicationContext)}")
-                        } catch(e: NumberFormatException) {
-                            Logger.LogE("Failed to get Hydration Value Input")
-                        }
-                    }
-                    withContext(Dispatchers.Main) {
-                        readHydrationValue()
-                    }
-                }
             }
         }
     }
