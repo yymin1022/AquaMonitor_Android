@@ -160,10 +160,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initChartView() {
+        chartView!!.setBackgroundColor(Color.TRANSPARENT)
         chartView!!.setDrawEntryLabels(false)
+        chartView!!.setHoleColor(Color.TRANSPARENT)
+        chartView!!.setTouchEnabled(false)
         chartView!!.description.isEnabled = false
         chartView!!.holeRadius = 85f
-        chartView!!.isClickable = false
         chartView!!.isRotationEnabled = false
     }
 
@@ -186,10 +188,9 @@ class MainActivity : AppCompatActivity() {
                 Color.valueOf(0f, 0f, 0f).toArgb()
             )
 
+            chartView!!.maxAngle = if(hydrationValue < 2000) hydrationValue * 360f / 2000 else 360f
             chartView!!.setData(PieData(dataSet))
             chartView!!.invalidate()
-
-            chartView!!.maxAngle = if(hydrationValue < 2000) hydrationValue * 360f / 2000 else 360f
         }
     }
 
