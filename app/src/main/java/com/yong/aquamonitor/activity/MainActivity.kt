@@ -193,7 +193,7 @@ class MainActivity : AppCompatActivity() {
 
             chartView!!.maxAngle = if(hydrationValue < 2000) hydrationValue * 360f / 2000 else 360f
             chartView!!.setData(PieData(dataSet))
-            chartView!!.invalidate()
+            chartView!!.animateX(1000, Easing.EaseInOutSine)
         }
     }
 
