@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var btnConnectNew: ImageButton? = null
-    private var btnReqReset: Button? = null
+    private var btnReqReset: ImageButton? = null
     private var btnReqUpdate: ImageButton? = null
     private var chartView: PieChart? = null
     private var tvConnectStatus: TextView? = null
