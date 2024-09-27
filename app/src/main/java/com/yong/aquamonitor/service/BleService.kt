@@ -155,6 +155,7 @@ class BleService: Service() {
 
                 val intent = Intent(ACTION_BLE_CONNECTED).apply {
                     putExtra("DEVICE_MAC", gatt.device!!.address)
+                    putExtra("DEVICE_NAME", gatt.device!!.name)
                 }
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
