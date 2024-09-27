@@ -13,6 +13,16 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:background="@android:color/transparent"
+        android:src="@drawable/ic_sync"
+        android:id="@+id/main_btn_ble_request_update"
+        app:layout_constraintEnd_toStartOf="@id/main_btn_connect_new"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@android:color/transparent"
         android:src="@drawable/ic_bluetooth"
         android:id="@+id/main_btn_connect_new"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +46,7 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="40dp"
         android:id="@+id/main_layout_value"
-        app:layout_constraintBottom_toTopOf="@id/main_btn_ble_request_update"
+        app:layout_constraintBottom_toTopOf="@id/main_btn_ble_request_reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_text_goal">
@@ -60,22 +70,12 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Request Data"
-        android:id="@+id/main_btn_ble_request_update"
-        app:layout_constraintBottom_toTopOf="@id/main_btn_ble_request_reset"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_layout_value" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Reset AquaMonitor Device"
         android:id="@+id/main_btn_ble_request_reset"
         app:layout_constraintBottom_toTopOf="@id/main_text_connect_status"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_btn_ble_request_update" />
+        app:layout_constraintTop_toBottomOf="@id/main_layout_value" />
 
     <TextView
         android:layout_width="wrap_content"
