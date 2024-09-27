@@ -1,5 +1,6 @@
 [versions]
 agp = "8.4.0"
+cardview = "1.0.0"
 connectClient = "1.1.0-alpha07"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -13,6 +14,7 @@ constraintlayout = "2.1.4"
 mpandroidchart = "v3.1.0"
 
 [libraries]
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 androidx-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "connectClient" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
