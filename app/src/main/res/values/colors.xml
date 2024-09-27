@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="hydration_beverage">#FF000000</color>
+    <color name="hydration_coffee">#80000000</color>
+    <color name="hydration_water">#FFA7D5FF</color>
 </resources>
