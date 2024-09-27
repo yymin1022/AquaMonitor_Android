@@ -241,7 +241,7 @@ class MainActivity : AppCompatActivity() {
                 Logger.LogD(intent.action.toString())
                 when(intent.action) {
                     BleService.ACTION_BLE_CONNECTED -> {
-                        tvConnectStatus!!.text = String.format("Connected to [%s]", intent.getStringExtra("DEVICE_MAC"))
+                        tvConnectStatus!!.text = String.format("Connected to [%s]", intent.getStringExtra("DEVICE_NAME"))
                     }
 
                     BleService.ACTION_BLE_DATA_RECEIVED -> {
