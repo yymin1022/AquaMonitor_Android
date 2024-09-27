@@ -24,6 +24,7 @@ import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.HydrationRecord
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.PieData
@@ -160,13 +161,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initChartView() {
+        chartView!!.description.isEnabled = false
+        chartView!!.holeRadius = 85f
+        chartView!!.isRotationEnabled = false
+        chartView!!.legend.isEnabled = false
         chartView!!.setBackgroundColor(Color.TRANSPARENT)
         chartView!!.setDrawEntryLabels(false)
         chartView!!.setHoleColor(Color.TRANSPARENT)
         chartView!!.setTouchEnabled(false)
-        chartView!!.description.isEnabled = false
-        chartView!!.holeRadius = 85f
-        chartView!!.isRotationEnabled = false
     }
 
     private fun setChartView() {
@@ -182,6 +184,7 @@ class MainActivity : AppCompatActivity() {
                 PieEntry(hydrationBeverage, "Beverage")
             )
             val dataSet = PieDataSet(chartValues, "Test Values")
+            dataSet.setDrawValues(false)
             dataSet.colors = listOf(
                 Color.valueOf(0.65f, 0.84f, 1f).toArgb(),
                 Color.valueOf(0.5f, 0.5f, 0.5f).toArgb(),
