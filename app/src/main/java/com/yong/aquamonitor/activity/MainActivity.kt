@@ -182,9 +182,9 @@ class MainActivity : AppCompatActivity() {
             val dataSet = PieDataSet(chartValues, "Test Values")
             dataSet.setDrawValues(false)
             dataSet.colors = listOf(
-                Color.valueOf(0.65f, 0.84f, 1f).toArgb(),
-                Color.valueOf(0.5f, 0.5f, 0.5f).toArgb(),
-                Color.valueOf(0f, 0f, 0f).toArgb()
+                applicationContext.getColor(R.color.hydration_water),
+                applicationContext.getColor(R.color.hydration_coffee),
+                applicationContext.getColor(R.color.hydration_beverage)
             )
 
             chartView!!.maxAngle = if(hydrationValue < 2000) hydrationValue * 360f / 2000 else 360f
