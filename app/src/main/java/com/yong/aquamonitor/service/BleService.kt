@@ -203,8 +203,8 @@ class BleService: Service() {
             if(data != null) {
                 val dataList = data.split("\n").map { value -> value.trim() }
 
-                val receivedCycle = dataList[0].toInt()
-                val receivedValue = dataList[1].toDouble()
+                val receivedCycle = dataList[1].toInt()
+                val receivedValue = dataList[0].toDouble()
                 Logger.LogI("Message Received: [${receivedCycle} / ${receivedValue}]")
 
                 processData(receivedCycle, receivedValue)
