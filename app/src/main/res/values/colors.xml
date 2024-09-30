@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="divider_gray">#21212133</color>
     <color name="white">#FFFFFFFF</color>
 
     <color name="hydration_beverage">#FF000000</color>
-    <color name="hydration_coffee">#80000000</color>
+    <color name="hydration_coffee">#FF937B72</color>
     <color name="hydration_water">#FFA7D5FF</color>
 </resources>
