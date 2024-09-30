@@ -20,8 +20,8 @@ class DetailDataRecyclerAdapter(
 ): RecyclerView.Adapter<DetailDataRecyclerAdapter.ViewHolder>() {
 
     interface OnItemClickListener {
-        fun onItemDeleteClick(dataItem: AquaMonitorData)
-        fun onItemEditClick(dataItem: AquaMonitorData)
+        fun onItemDeleteClick(position: Int, dataItem: AquaMonitorData)
+        fun onItemEditClick(position: Int, dataItem: AquaMonitorData)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,10 +34,10 @@ class DetailDataRecyclerAdapter(
 
         init {
             icDelete.setOnClickListener { view ->
-                itemDeleteClickListener.onItemDeleteClick(dataList[adapterPosition])
+                itemDeleteClickListener.onItemDeleteClick(adapterPosition, dataList[adapterPosition])
             }
             icEdit.setOnClickListener { view ->
-                itemEditClickListener.onItemEditClick(dataList[adapterPosition])
+                itemEditClickListener.onItemEditClick(adapterPosition, dataList[adapterPosition])
             }
         }
     }

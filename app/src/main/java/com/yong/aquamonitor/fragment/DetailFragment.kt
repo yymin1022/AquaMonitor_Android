@@ -51,11 +51,11 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
         }
     }
 
-    override fun onItemDeleteClick(dataItem: AquaMonitorData) {
+    override fun onItemDeleteClick(position: Int, dataItem: AquaMonitorData) {
         TODO("Not yet implemented")
     }
 
-    override fun onItemEditClick(dataItem: AquaMonitorData) {
+    override fun onItemEditClick(position: Int, dataItem: AquaMonitorData) {
         AlertDialog.Builder(requireContext())
             .setTitle("종류 선택")
             .setItems(arrayOf("물", "커피", "음료")) { _, select ->
