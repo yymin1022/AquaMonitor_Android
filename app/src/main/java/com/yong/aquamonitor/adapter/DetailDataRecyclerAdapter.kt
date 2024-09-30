@@ -49,9 +49,19 @@ class DetailDataRecyclerAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val dataItem = dataList[position]
-        holder.tvValue.text = dataItem.value.toString()
         holder.tvTimeFrom.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(dataItem.timeFrom)
         holder.tvTimeTo.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(dataItem.timeTo)
+        holder.tvValue.text = String.format(Locale.getDefault(), "%dml", dataItem.value)
+
+        if(dataItem.id == null) {
+            holder.icDelete.visibility = View.INVISIBLE
+            holder.icEdit.visibility = View.INVISIBLE
+            holder.icType.visibility = View.INVISIBLE
+            holder.tvTimeFrom.visibility = View.INVISIBLE
+            holder.tvTimeTo.visibility = View.INVISIBLE
+            holder.tvValue.text = SimpleDateFormat("MM/DD", Locale.getDefault()).format(dataItem.timeFrom)
+            return
+        }
 
         when(dataItem.type) {
             DrinkType.DRINK_BEVERAGE -> holder.icType.setImageResource(R.drawable.circle_beverage)

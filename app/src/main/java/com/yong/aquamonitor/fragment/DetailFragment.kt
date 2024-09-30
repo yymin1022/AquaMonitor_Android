@@ -18,6 +18,8 @@ import com.yong.aquamonitor.util.Logger
 import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener {
     private var recyclerDetailData: RecyclerView? = null
@@ -47,6 +49,11 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
             val dataList = HealthConnectUtil.getTotalHydrationData(requireActivity())
             detailDataList.clear()
             dataList.forEach { data ->
+                if(detailDataList.isEmpty() ||
+                    SimpleDateFormat("DD", Locale.getDefault()).format(data.timeFrom)
+                        != SimpleDateFormat("DD", Locale.getDefault()).format(detailDataList.last().timeFrom)) {
+                    detailDataList.add(AquaMonitorData(-1, -1.0, data.timeFrom, data.timeTo, null, null))
+                }
                 detailDataList.add(data)
                 recyclerDetailAdapter!!.notifyItemInserted(detailDataList.size)
             }
