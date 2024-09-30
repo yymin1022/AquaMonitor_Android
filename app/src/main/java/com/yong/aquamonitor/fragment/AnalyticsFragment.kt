@@ -121,17 +121,18 @@ class AnalyticsFragment: Fragment() {
             val chartValues = arrayListOf(
                 PieEntry(hydrationWater, "Water"),
                 PieEntry(hydrationCoffee, "Coffee"),
-                PieEntry(hydrationBeverage, "Beverage")
+                PieEntry(hydrationBeverage, "Beverage"),
+                PieEntry(2000 - hydrationValue, "Remain")
             )
             val dataSet = PieDataSet(chartValues, "Test Values")
             dataSet.setDrawValues(false)
             dataSet.colors = listOf(
                 requireActivity().getColor(R.color.hydration_water),
                 requireActivity().getColor(R.color.hydration_coffee),
-                requireActivity().getColor(R.color.hydration_beverage)
+                requireActivity().getColor(R.color.hydration_beverage),
+                Color.TRANSPARENT
             )
 
-            chartView!!.maxAngle = if(hydrationValue < 2000) hydrationValue * 360f / 2000 else 360f
             chartView!!.setData(PieData(dataSet))
             chartView!!.animateX(1000, Easing.EaseInOutSine)
         }
