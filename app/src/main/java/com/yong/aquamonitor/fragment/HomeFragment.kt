@@ -23,6 +23,7 @@ import com.yong.aquamonitor.R
 import com.yong.aquamonitor.activity.ConnectActivity
 import com.yong.aquamonitor.activity.MainActivity
 import com.yong.aquamonitor.service.BleService
+import com.yong.aquamonitor.util.DrinkType
 import com.yong.aquamonitor.util.HealthConnectUtil
 import com.yong.aquamonitor.util.Logger
 import kotlinx.coroutines.CoroutineScope
@@ -36,6 +37,12 @@ class HomeFragment: Fragment() {
     private var btnReqUpdate: ImageButton? = null
     private var chartView: PieChart? = null
     private var tvConnectStatus: TextView? = null
+    private var tvHydrationBeveragePerc: TextView? = null
+    private var tvHydrationBeverageValue: TextView? = null
+    private var tvHydrationCoffeePerc: TextView? = null
+    private var tvHydrationCoffeeValue: TextView? = null
+    private var tvHydrationWaterPerc: TextView? = null
+    private var tvHydrationWaterValue: TextView? = null
     private var tvValue: TextView? = null
 
     private val bleReceiver = BleReceiver()
@@ -50,14 +57,19 @@ class HomeFragment: Fragment() {
         btnReqUpdate = layoutInflater.findViewById(R.id.main_btn_ble_request_update)
         chartView = layoutInflater.findViewById(R.id.main_pie_chart)
         tvConnectStatus = layoutInflater.findViewById(R.id.main_text_connect_status)
+        tvHydrationBeveragePerc = layoutInflater.findViewById(R.id.main_card_perc_beverage)
+        tvHydrationBeverageValue = layoutInflater.findViewById(R.id.main_card_value_beverage)
+        tvHydrationCoffeePerc = layoutInflater.findViewById(R.id.main_card_perc_coffee)
+        tvHydrationCoffeeValue = layoutInflater.findViewById(R.id.main_card_value_coffee)
+        tvHydrationWaterPerc = layoutInflater.findViewById(R.id.main_card_perc_water)
+        tvHydrationWaterValue = layoutInflater.findViewById(R.id.main_card_value_water)
         tvValue = layoutInflater.findViewById(R.id.main_text_value)
+
         btnConnectNew!!.setOnClickListener(btnListener)
         btnReqReset!!.setOnClickListener(btnListener)
         btnReqUpdate!!.setOnClickListener(btnListener)
 
         initChartView()
-        setChartView()
-
         readHydrationValue()
 
         val bleReceiverFilter = IntentFilter().apply {
@@ -76,8 +88,20 @@ class HomeFragment: Fragment() {
 
     private fun readHydrationValue() {
         lifecycleScope.launch {
-            val hydrationValue = HealthConnectUtil.getTodayHydration(requireActivity())
-            tvValue!!.text = String.format(Locale.getDefault(), "%.0f%%", if(hydrationValue != null) hydrationValue / 20  else -1.0)
+            val hydrationBeverage = HealthConnectUtil.getTodayHydrationByType(requireActivity(), DrinkType.DRINK_BEVERAGE) ?: 0.0f
+            val hydrationCoffee = HealthConnectUtil.getTodayHydrationByType(requireActivity(), DrinkType.DRINK_COFFEE) ?: 0.0f
+            val hydrationWater = HealthConnectUtil.getTodayHydrationByType(requireActivity(), DrinkType.DRINK_WATER) ?: 0.0f
+
+            val hydrationValue = hydrationBeverage * 0.8f + hydrationCoffee * 0.9f + hydrationWater
+            setChartView(hydrationValue, hydrationBeverage * 0.8f, hydrationCoffee * 0.9f, hydrationWater)
+
+            tvHydrationBeveragePerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationBeverage.toInt() / 20)
+            tvHydrationBeverageValue!!.text = String.format(Locale.getDefault(), "%dml", hydrationBeverage.toInt())
+            tvHydrationCoffeePerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationCoffee.toInt() / 20)
+            tvHydrationCoffeeValue!!.text = String.format(Locale.getDefault(), "%dml", hydrationCoffee.toInt())
+            tvHydrationWaterPerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationWater.toInt() / 20)
+            tvHydrationWaterValue!!.text = String.format(Locale.getDefault(), "%dml", hydrationWater.toInt())
+            tvValue!!.text = String.format(Locale.getDefault(), "%.0f%%",  hydrationValue / 20)
         }
     }
 
@@ -92,13 +116,8 @@ class HomeFragment: Fragment() {
         chartView!!.setTouchEnabled(false)
     }
 
-    private fun setChartView() {
+    private fun setChartView(hydrationValue: Float, hydrationBeverage: Float, hydrationCoffee: Float, hydrationWater: Float) {
         lifecycleScope.launch {
-            val hydrationCoffee = 250f
-            val hydrationBeverage = 100f
-            val hydrationWater = 600f
-            val hydrationValue = (hydrationBeverage * 0.8f + hydrationCoffee * 0.9f + hydrationWater)
-
             val chartValues = arrayListOf(
                 PieEntry(hydrationWater, "Water"),
                 PieEntry(hydrationCoffee, "Coffee"),
@@ -126,10 +145,12 @@ class HomeFragment: Fragment() {
 
             R.id.main_btn_ble_request_reset -> {
                 (activity as MainActivity).bleService?.writeMessage("R")
+                readHydrationValue()
             }
 
             R.id.main_btn_ble_request_update -> {
                 (activity as MainActivity).bleService?.writeMessage("U")
+                readHydrationValue()
             }
         }
     }
