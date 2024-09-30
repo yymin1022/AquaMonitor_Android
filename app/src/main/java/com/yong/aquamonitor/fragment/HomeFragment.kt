@@ -77,7 +77,7 @@ class HomeFragment: Fragment() {
     private fun readHydrationValue() {
         lifecycleScope.launch {
             val hydrationValue = HealthConnectUtil.getTodayHydration(requireActivity())
-            tvValue!!.text = String.format(Locale.getDefault(), "%.0f%%", if(hydrationValue != null) hydrationValue / 20  else -1)
+            tvValue!!.text = String.format(Locale.getDefault(), "%.0f%%", if(hydrationValue != null) hydrationValue / 20  else -1.0)
         }
     }
 
