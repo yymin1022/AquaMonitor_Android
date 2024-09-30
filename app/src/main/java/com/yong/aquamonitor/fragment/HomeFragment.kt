@@ -52,18 +52,18 @@ class HomeFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val layoutInflater = inflater.inflate(R.layout.fragment_home, container, false)
-        btnConnectNew = layoutInflater.findViewById(R.id.home_btn_connect_new)
-        btnReqReset = layoutInflater.findViewById(R.id.home_btn_ble_request_reset)
-        btnReqUpdate = layoutInflater.findViewById(R.id.home_btn_ble_request_update)
-        chartView = layoutInflater.findViewById(R.id.home_pie_chart)
-        tvConnectStatus = layoutInflater.findViewById(R.id.home_text_connect_status)
-        tvHydrationBeveragePerc = layoutInflater.findViewById(R.id.home_card_perc_beverage)
-        tvHydrationBeverageValue = layoutInflater.findViewById(R.id.home_card_value_beverage)
-        tvHydrationCoffeePerc = layoutInflater.findViewById(R.id.home_card_perc_coffee)
-        tvHydrationCoffeeValue = layoutInflater.findViewById(R.id.home_card_value_coffee)
-        tvHydrationWaterPerc = layoutInflater.findViewById(R.id.home_card_perc_water)
-        tvHydrationWaterValue = layoutInflater.findViewById(R.id.home_card_value_water)
-        tvValue = layoutInflater.findViewById(R.id.home_text_value)
+        btnConnectNew = layoutInflater.findViewById(R.id.main_analytics_btn_connect_new)
+        btnReqReset = layoutInflater.findViewById(R.id.main_analytics_btn_ble_request_reset)
+        btnReqUpdate = layoutInflater.findViewById(R.id.main_analytics_btn_ble_request_update)
+        chartView = layoutInflater.findViewById(R.id.main_analytics_pie_chart)
+        tvConnectStatus = layoutInflater.findViewById(R.id.main_analytics_text_connect_status)
+        tvHydrationBeveragePerc = layoutInflater.findViewById(R.id.main_analytics_card_perc_beverage)
+        tvHydrationBeverageValue = layoutInflater.findViewById(R.id.main_analytics_card_value_beverage)
+        tvHydrationCoffeePerc = layoutInflater.findViewById(R.id.main_analytics_card_perc_coffee)
+        tvHydrationCoffeeValue = layoutInflater.findViewById(R.id.main_analytics_card_value_coffee)
+        tvHydrationWaterPerc = layoutInflater.findViewById(R.id.main_analytics_card_perc_water)
+        tvHydrationWaterValue = layoutInflater.findViewById(R.id.main_analytics_card_value_water)
+        tvValue = layoutInflater.findViewById(R.id.main_analytics_text_value)
 
         btnConnectNew!!.setOnClickListener(btnListener)
         btnReqReset!!.setOnClickListener(btnListener)
@@ -139,16 +139,16 @@ class HomeFragment: Fragment() {
 
     private val btnListener = View.OnClickListener { view ->
         when(view.id) {
-            R.id.home_btn_connect_new -> {
+            R.id.main_analytics_btn_connect_new -> {
                 startActivity(Intent(activity, ConnectActivity::class.java))
             }
 
-            R.id.home_btn_ble_request_reset -> {
+            R.id.main_analytics_btn_ble_request_reset -> {
                 (activity as MainActivity).bleService?.writeMessage("R")
                 readHydrationValue()
             }
 
-            R.id.home_btn_ble_request_update -> {
+            R.id.main_analytics_btn_ble_request_update -> {
                 (activity as MainActivity).bleService?.writeMessage("U")
                 readHydrationValue()
             }

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home"
+    android:id="@+id/main_analytics"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
@@ -14,7 +14,7 @@
         android:padding="10dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_reset"
-        android:id="@+id/home_btn_ble_request_reset"
+        android:id="@+id/main_analytics_btn_ble_request_reset"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,8 +24,8 @@
         android:padding="10dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_sync"
-        android:id="@+id/home_btn_ble_request_update"
-        app:layout_constraintEnd_toStartOf="@id/home_btn_connect_new"
+        android:id="@+id/main_analytics_btn_ble_request_update"
+        app:layout_constraintEnd_toStartOf="@id/main_analytics_btn_connect_new"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -34,7 +34,7 @@
         android:padding="10dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_bluetooth"
-        android:id="@+id/home_btn_connect_new"
+        android:id="@+id/main_analytics_btn_connect_new"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,8 +45,8 @@
         android:text="오늘은 2000ml의\n물을 마셔야 해요!"
         android:textAlignment="center"
         android:textSize="25sp"
-        android:id="@+id/home_text_goal"
-        app:layout_constraintBottom_toTopOf="@id/home_layout_value"
+        android:id="@+id/main_analytics_text_goal"
+        app:layout_constraintBottom_toTopOf="@id/main_analytics_layout_value"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -55,16 +55,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="40dp"
-        android:id="@+id/home_layout_value"
-        app:layout_constraintBottom_toTopOf="@id/home_layout_card"
+        android:id="@+id/main_analytics_layout_value"
+        app:layout_constraintBottom_toTopOf="@id/main_analytics_layout_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_text_goal">
+        app:layout_constraintTop_toBottomOf="@id/main_analytics_text_goal">
 
         <com.github.mikephil.charting.charts.PieChart
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/home_pie_chart" />
+            android:id="@+id/main_analytics_pie_chart" />
 
         <TextView
             android:layout_width="match_parent"
@@ -73,7 +73,7 @@
             android:text="0%"
             android:textAlignment="center"
             android:textSize="40sp"
-            android:id="@+id/home_text_value" />
+            android:id="@+id/main_analytics_text_value" />
 
     </FrameLayout>
 
@@ -81,11 +81,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:id="@+id/home_layout_card"
+        android:id="@+id/main_analytics_layout_card"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_layout_value">
+        app:layout_constraintTop_toBottomOf="@+id/main_analytics_layout_value">
 
         <View
             android:layout_width="match_parent"
@@ -102,9 +102,9 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:background="@drawable/circle_water"
-                android:id="@+id/home_card_icon_water"
+                android:id="@+id/main_analytics_card_icon_water"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/home_card_title_water"
+                app:layout_constraintEnd_toStartOf="@id/main_analytics_card_title_water"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -113,16 +113,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:text="물"
-                android:id="@+id/home_card_title_water"
+                android:id="@+id/main_analytics_card_title_water"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/home_card_icon_water"
+                app:layout_constraintStart_toEndOf="@id/main_analytics_card_icon_water"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="600ml"
-                android:id="@+id/home_card_value_water"
+                android:id="@+id/main_analytics_card_value_water"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -132,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30%"
-                android:id="@+id/home_card_perc_water"
+                android:id="@+id/main_analytics_card_perc_water"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -154,9 +154,9 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:background="@drawable/circle_coffee"
-                android:id="@+id/home_card_icon_coffee"
+                android:id="@+id/main_analytics_card_icon_coffee"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/home_card_title_coffee"
+                app:layout_constraintEnd_toStartOf="@id/main_analytics_card_title_coffee"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -165,16 +165,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:text="커피"
-                android:id="@+id/home_card_title_coffee"
+                android:id="@+id/main_analytics_card_title_coffee"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/home_card_icon_coffee"
+                app:layout_constraintStart_toEndOf="@id/main_analytics_card_icon_coffee"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="600ml"
-                android:id="@+id/home_card_value_coffee"
+                android:id="@+id/main_analytics_card_value_coffee"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +184,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30%"
-                android:id="@+id/home_card_perc_coffee"
+                android:id="@+id/main_analytics_card_perc_coffee"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -206,9 +206,9 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:background="@drawable/circle_beverage"
-                android:id="@+id/home_card_icon_beverage"
+                android:id="@+id/main_analytics_card_icon_beverage"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/home_card_title_beverage"
+                app:layout_constraintEnd_toStartOf="@id/main_analytics_card_title_beverage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -217,16 +217,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:text="음료"
-                android:id="@+id/home_card_title_beverage"
+                android:id="@+id/main_analytics_card_title_beverage"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/home_card_icon_beverage"
+                app:layout_constraintStart_toEndOf="@id/main_analytics_card_icon_beverage"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="600ml"
-                android:id="@+id/home_card_value_beverage"
+                android:id="@+id/main_analytics_card_value_beverage"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -236,7 +236,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30%"
-                android:id="@+id/home_card_perc_beverage"
+                android:id="@+id/main_analytics_card_perc_beverage"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -256,7 +256,7 @@
         android:layout_height="wrap_content"
         android:text="Not Connected"
         android:textSize="15sp"
-        android:id="@+id/home_text_connect_status"
+        android:id="@+id/main_analytics_text_connect_status"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
