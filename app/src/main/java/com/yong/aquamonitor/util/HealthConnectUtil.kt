@@ -33,22 +33,20 @@ object HealthConnectUtil {
         initHealthConnect(context)
 
         var hydrationValue: Double? = null
+        Logger.LogI("Reading Current Value...")
         withContext(Dispatchers.IO) {
-            Logger.LogI("Reading Current Value...")
-            withContext(Dispatchers.IO) {
-                try {
-                    hydrationValue = 0.0
-                    val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
-                        timeRangeFilter = TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
-                    async {
-                        healthConnectClient!!.readRecords(recordRequest)
-                    }.await().records.forEach { record ->
-                        hydrationValue = hydrationValue!! + record.volume.inMilliliters
-                        Logger.LogI(record.metadata.id)
-                    }
-                } catch(e: Exception) {
-                    Logger.LogE("Health Connect Get Error: [$e]")
+            try {
+                hydrationValue = 0.0
+                val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
+                    timeRangeFilter = TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
+                async {
+                    healthConnectClient!!.readRecords(recordRequest)
+                }.await().records.forEach { record ->
+                    hydrationValue = hydrationValue!! + record.volume.inMilliliters
+                    Logger.LogI(record.metadata.id)
                 }
+            } catch(e: Exception) {
+                Logger.LogE("Health Connect Get Error: [$e]")
             }
         }
 
@@ -59,25 +57,23 @@ object HealthConnectUtil {
         initHealthConnect(context)
 
         var hydrationValue: Float? = null
+        Logger.LogI("Reading Current Value...")
         withContext(Dispatchers.IO) {
-            Logger.LogI("Reading Current Value...")
-            withContext(Dispatchers.IO) {
-                try {
-                    hydrationValue = 0.0f
-                    val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
-                        timeRangeFilter = TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
-                    async {
-                        healthConnectClient!!.readRecords(recordRequest)
-                    }.await().records.forEach { record ->
-                        val curRecordData = PreferenceUtil.getHealthData(record.metadata.id, context)
-                        if(curRecordData?.type != null && curRecordData.type == type) {
-                            hydrationValue = hydrationValue!! + record.volume.inMilliliters.toFloat()
-                        }
-                        Logger.LogI(record.metadata.id)
+            try {
+                hydrationValue = 0.0f
+                val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
+                    timeRangeFilter = TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
+                async {
+                    healthConnectClient!!.readRecords(recordRequest)
+                }.await().records.forEach { record ->
+                    val curRecordData = PreferenceUtil.getHealthData(record.metadata.id, context)
+                    if(curRecordData?.type != null && curRecordData.type == type) {
+                        hydrationValue = hydrationValue!! + record.volume.inMilliliters.toFloat()
                     }
-                } catch(e: Exception) {
-                    Logger.LogE("Health Connect Get Error: [$e]")
+                    Logger.LogI(record.metadata.id)
                 }
+            } catch(e: Exception) {
+                Logger.LogE("Health Connect Get Error: [$e]")
             }
         }
 
@@ -88,24 +84,23 @@ object HealthConnectUtil {
         initHealthConnect(context)
 
         val dataList = mutableListOf<AquaMonitorData>()
+        Logger.LogI("Reading Current Value...")
         withContext(Dispatchers.IO) {
-            Logger.LogI("Reading Current Value...")
-            withContext(Dispatchers.IO) {
-                try {
-                    val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
-                        timeRangeFilter = TimeRangeFilter.between(Instant.MIN, Instant.MAX))
-                    async {
-                        healthConnectClient!!.readRecords(recordRequest)
-                    }.await().records.forEach { record ->
-                        val curData = PreferenceUtil.getHealthData(record.metadata.id, context)
-                        if(curData != null) {
-                            dataList.add(curData)
-                            Logger.LogI(curData.id ?: "null")
-                        }
+            try {
+                val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(TimeRangeFilter.before(LocalDateTime.now()))
+                async {
+                    healthConnectClient!!.readRecords(recordRequest)
+                }.await().records.forEach { record ->
+                    val curData = PreferenceUtil.getHealthData(record.metadata.id, context)
+                    if(curData != null) {
+                        dataList.add(curData)
+                        Logger.LogI(curData.id ?: "null")
+                    }else{
+                        Logger.LogI("NULL DATA")
                     }
-                } catch(e: Exception) {
-                    Logger.LogE("Health Connect Get Error: [$e]")
                 }
+            } catch(e: Exception) {
+                Logger.LogE("Health Connect Get Error: [$e]")
             }
         }
 
