@@ -84,6 +84,34 @@ object HealthConnectUtil {
         return hydrationValue
     }
 
+    suspend fun getTotalHydrationData(context: Context): MutableList<AquaMonitorData> {
+        initHealthConnect(context)
+
+        val dataList = mutableListOf<AquaMonitorData>()
+        withContext(Dispatchers.IO) {
+            Logger.LogI("Reading Current Value...")
+            withContext(Dispatchers.IO) {
+                try {
+                    val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
+                        timeRangeFilter = TimeRangeFilter.between(Instant.MIN, Instant.MAX))
+                    async {
+                        healthConnectClient!!.readRecords(recordRequest)
+                    }.await().records.forEach { record ->
+                        val curData = PreferenceUtil.getHealthData(record.metadata.id, context)
+                        if(curData != null) {
+                            dataList.add(curData)
+                            Logger.LogI(curData.id ?: "null")
+                        }
+                    }
+                } catch(e: Exception) {
+                    Logger.LogE("Health Connect Get Error: [$e]")
+                }
+            }
+        }
+
+        return dataList
+    }
+
     suspend fun updateHydration(data: AquaMonitorData, context: Context): String? {
         initHealthConnect(context)
 
