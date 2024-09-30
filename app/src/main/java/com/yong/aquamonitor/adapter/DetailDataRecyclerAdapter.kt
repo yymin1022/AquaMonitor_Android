@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.util.AquaMonitorData
 import com.yong.aquamonitor.util.DrinkType
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class DetailDataRecyclerAdapter(
     private val dataList: List<AquaMonitorData>,
@@ -42,8 +44,8 @@ class DetailDataRecyclerAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val dataItem = dataList[position]
         holder.tvValue.text = dataItem.value.toString()
-        holder.tvTimeFrom.text = dataItem.timeFrom.toString()
-        holder.tvTimeTo.text = dataItem.timeTo.toString()
+        holder.tvTimeFrom.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(dataItem.timeFrom)
+        holder.tvTimeTo.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(dataItem.timeTo)
 
         when(dataItem.type) {
             DrinkType.DRINK_BEVERAGE -> holder.icType.setImageResource(R.drawable.circle_beverage)
