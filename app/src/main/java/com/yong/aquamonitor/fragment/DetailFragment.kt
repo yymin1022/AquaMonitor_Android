@@ -5,16 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.adapter.DetailDataRecyclerAdapter
 import com.yong.aquamonitor.util.AquaMonitorData
+import com.yong.aquamonitor.util.DrinkType
 import com.yong.aquamonitor.util.HealthConnectUtil
-import kotlinx.coroutines.Dispatchers
+import com.yong.aquamonitor.util.Logger
+import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener {
     private var recyclerDetailData: RecyclerView? = null
@@ -49,7 +51,19 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
         }
     }
 
-    override fun onItemClick(dataItem: AquaMonitorData) {
-        TODO("Not yet implemented")
+    override fun onItemEditClick(dataItem: AquaMonitorData) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("종류 선택")
+            .setItems(arrayOf("물", "커피", "음료")) { _, select ->
+                when(select) {
+                    0 -> dataItem.type = DrinkType.DRINK_WATER
+                    1 -> dataItem.type = DrinkType.DRINK_COFFEE
+                    2 -> dataItem.type = DrinkType.DRINK_BEVERAGE
+                }
+
+                PreferenceUtil.saveHealthData(dataItem, requireActivity())
+                Logger.LogD(dataItem.id!!)
+            }
+            .show()
     }
 }
