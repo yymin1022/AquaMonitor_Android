@@ -113,8 +113,8 @@ object HealthConnectUtil {
                 volume = Volume.milliliters(data.value),
                 startTime = Instant.ofEpochMilli(data.timeFrom),
                 endTime = Instant.ofEpochMilli(data.timeTo),
-                startZoneOffset = ZoneOffset.MIN,
-                endZoneOffset = ZoneOffset.MIN
+                startZoneOffset = null,
+                endZoneOffset = null
             )
             val insertResult = healthConnectClient!!.insertRecords(listOf(hydrationRecord))
             for(res in insertResult.recordIdsList) {
