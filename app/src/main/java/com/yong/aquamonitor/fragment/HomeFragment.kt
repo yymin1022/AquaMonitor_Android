@@ -12,8 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.health.connect.client.permission.HealthPermission
-import androidx.health.connect.client.records.HydrationRecord
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.mikephil.charting.animation.Easing
