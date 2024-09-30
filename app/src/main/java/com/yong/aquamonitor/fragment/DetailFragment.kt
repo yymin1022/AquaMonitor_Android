@@ -17,6 +17,7 @@ import com.yong.aquamonitor.util.HealthConnectUtil
 import com.yong.aquamonitor.util.Logger
 import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener {
     private var recyclerDetailData: RecyclerView? = null
@@ -44,6 +45,7 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
     private fun getDataList() {
         lifecycleScope.launch {
             val dataList = HealthConnectUtil.getTotalHydrationData(requireActivity())
+            detailDataList.clear()
             dataList.forEach { data ->
                 detailDataList.add(data)
                 recyclerDetailAdapter!!.notifyItemInserted(detailDataList.size)
@@ -52,7 +54,10 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
     }
 
     override fun onItemDeleteClick(position: Int, dataItem: AquaMonitorData) {
-        TODO("Not yet implemented")
+        lifecycleScope.launch {
+            HealthConnectUtil.deleteHydration(dataItem.id ?: "", requireActivity())
+            recyclerDetailAdapter!!.notifyItemRemoved(position)
+        }
     }
 
     override fun onItemEditClick(position: Int, dataItem: AquaMonitorData) {
