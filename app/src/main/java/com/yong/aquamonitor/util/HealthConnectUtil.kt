@@ -5,13 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.HydrationRecord
-import androidx.health.connect.client.request.AggregateRequest
+import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Volume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 object HealthConnectUtil {
@@ -32,18 +33,19 @@ object HealthConnectUtil {
         initHealthConnect(context)
 
         var hydrationValue: Double? = null
-
         withContext(Dispatchers.IO) {
             Logger.LogI("Reading Current Value...")
             withContext(Dispatchers.IO) {
                 try {
-                    val hydrationResponse = async { healthConnectClient!!.aggregate(
-                        AggregateRequest(
-                            metrics = setOf(HydrationRecord.VOLUME_TOTAL),
-                            timeRangeFilter = TimeRangeFilter.before(Instant.now())
-                        )
-                    ) }.await()[HydrationRecord.VOLUME_TOTAL]
-                    hydrationValue = hydrationResponse?.inMilliliters
+                    hydrationValue = 0.0
+                    val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
+                        timeRangeFilter = TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
+                    async {
+                        healthConnectClient!!.readRecords(recordRequest)
+                    }.await().records.forEach { record ->
+                        hydrationValue = hydrationValue!! + record.volume.inMilliliters
+                        Logger.LogI(record.metadata.id)
+                    }
                 } catch(e: Exception) {
                     Logger.LogE("Health Connect Get Error: [$e]")
                 }
