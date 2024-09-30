@@ -15,14 +15,17 @@ import java.util.Locale
 
 class DetailDataRecyclerAdapter(
     private val dataList: List<AquaMonitorData>,
+    private val itemDeleteClickListener: OnItemClickListener,
     private val itemEditClickListener: OnItemClickListener
 ): RecyclerView.Adapter<DetailDataRecyclerAdapter.ViewHolder>() {
 
     interface OnItemClickListener {
+        fun onItemDeleteClick(dataItem: AquaMonitorData)
         fun onItemEditClick(dataItem: AquaMonitorData)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val icDelete: ImageButton = itemView.findViewById(R.id.recycler_item_detail_delete)
         val icEdit: ImageButton = itemView.findViewById(R.id.recycler_item_detail_edit)
         val icType: ImageView = itemView.findViewById(R.id.recycler_item_detail_icon)
         val tvTimeFrom: TextView = itemView.findViewById(R.id.recycler_item_detail_time_from)
@@ -30,6 +33,9 @@ class DetailDataRecyclerAdapter(
         val tvValue: TextView = itemView.findViewById(R.id.recycler_item_detail_value)
 
         init {
+            icDelete.setOnClickListener { view ->
+                itemDeleteClickListener.onItemDeleteClick(dataList[adapterPosition])
+            }
             icEdit.setOnClickListener { view ->
                 itemEditClickListener.onItemEditClick(dataList[adapterPosition])
             }

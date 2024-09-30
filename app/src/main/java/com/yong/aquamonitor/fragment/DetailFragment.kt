@@ -30,7 +30,7 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
     ): View? {
         val layoutInflater = inflater.inflate(R.layout.fragment_detail, container, false)
 
-        recyclerDetailAdapter = DetailDataRecyclerAdapter(detailDataList, this)
+        recyclerDetailAdapter = DetailDataRecyclerAdapter(detailDataList, this, this)
         recyclerDetailData = layoutInflater.findViewById(R.id.main_detail_recycler)
 
         recyclerDetailData!!.adapter = recyclerDetailAdapter
@@ -49,6 +49,10 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
                 recyclerDetailAdapter!!.notifyItemInserted(detailDataList.size)
             }
         }
+    }
+
+    override fun onItemDeleteClick(dataItem: AquaMonitorData) {
+        TODO("Not yet implemented")
     }
 
     override fun onItemEditClick(dataItem: AquaMonitorData) {
