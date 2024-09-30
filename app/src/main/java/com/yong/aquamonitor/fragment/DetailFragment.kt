@@ -5,13 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.yong.aquamonitor.R
 
-class DetailFragment : Fragment() {
+class DetailFragment: Fragment() {
+    private var recyclerDetail: RecyclerView? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_detail, container, false)
+        val layoutInflater = inflater.inflate(R.layout.fragment_detail, container, false)
+        recyclerDetail = layoutInflater.findViewById(R.id.main_detail_recycler)
+
+        return layoutInflater
     }
 }
