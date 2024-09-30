@@ -37,8 +37,7 @@ object HealthConnectUtil {
         withContext(Dispatchers.IO) {
             try {
                 hydrationValue = 0.0
-                val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
-                    timeRangeFilter = TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
+                val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
                 async {
                     healthConnectClient!!.readRecords(recordRequest)
                 }.await().records.forEach { record ->
@@ -61,8 +60,7 @@ object HealthConnectUtil {
         withContext(Dispatchers.IO) {
             try {
                 hydrationValue = 0.0f
-                val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
-                    timeRangeFilter = TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
+                val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
                 async {
                     healthConnectClient!!.readRecords(recordRequest)
                 }.await().records.forEach { record ->
@@ -91,13 +89,11 @@ object HealthConnectUtil {
                 async {
                     healthConnectClient!!.readRecords(recordRequest)
                 }.await().records.forEach { record ->
-                    val curData = PreferenceUtil.getHealthData(record.metadata.id, context)
-                    if(curData != null) {
-                        dataList.add(curData)
-                        Logger.LogI(curData.id ?: "null")
-                    }else{
-                        Logger.LogI("NULL DATA")
+                    val curRecordData = PreferenceUtil.getHealthData(record.metadata.id, context)
+                    if(curRecordData != null) {
+                        dataList.add(curRecordData)
                     }
+                    Logger.LogI(record.metadata.id)
                 }
             } catch(e: Exception) {
                 Logger.LogE("Health Connect Get Error: [$e]")
