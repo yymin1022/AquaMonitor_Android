@@ -39,12 +39,12 @@ class MainActivity : AppCompatActivity() {
         HealthPermission.getWritePermission(HydrationRecord::class)
     )
 
+    private var bottomNavigation: ConstraintLayout? = null
+    private var fragmentLayout: FrameLayout? = null
+
     var bleService: BleService? = null
     var bleDeviceAddress: String? = null
     var isServiceBinded = false
-
-    var bottomNavigation: ConstraintLayout? = null
-    var fragmentLayout: FrameLayout? = null
 
     private val bleServiceConnection = object: ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
