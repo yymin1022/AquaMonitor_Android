@@ -22,7 +22,7 @@ import androidx.health.connect.client.records.HydrationRecord
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.fragment.AlarmFragment
 import com.yong.aquamonitor.fragment.DetailFragment
-import com.yong.aquamonitor.fragment.HomeFragment
+import com.yong.aquamonitor.fragment.AnalyticsFragment
 import com.yong.aquamonitor.fragment.ProfileFragment
 import com.yong.aquamonitor.service.BleService
 import com.yong.aquamonitor.util.HealthConnectUtil
@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, DetailFragment()).commit()
                 }
                 R.id.main_nav_home -> {
-                    supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, HomeFragment()).commit()
+                    supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, AnalyticsFragment()).commit()
                 }
                 R.id.main_nav_profile -> {
                     supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, ProfileFragment()).commit()
@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, HomeFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, AnalyticsFragment()).commit()
         navAlarm.setOnClickListener(navListener)
         navDetail.setOnClickListener(navListener)
         navHome.setOnClickListener(navListener)

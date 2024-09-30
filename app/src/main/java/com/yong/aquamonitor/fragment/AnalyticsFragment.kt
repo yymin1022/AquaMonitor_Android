@@ -31,7 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class HomeFragment: Fragment() {
+class AnalyticsFragment: Fragment() {
     private var btnConnectNew: ImageButton? = null
     private var btnReqReset: ImageButton? = null
     private var btnReqUpdate: ImageButton? = null
@@ -51,7 +51,7 @@ class HomeFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val layoutInflater = inflater.inflate(R.layout.fragment_home, container, false)
+        val layoutInflater = inflater.inflate(R.layout.fragment_analytics, container, false)
         btnConnectNew = layoutInflater.findViewById(R.id.main_analytics_btn_connect_new)
         btnReqReset = layoutInflater.findViewById(R.id.main_analytics_btn_ble_request_reset)
         btnReqUpdate = layoutInflater.findViewById(R.id.main_analytics_btn_ble_request_update)
