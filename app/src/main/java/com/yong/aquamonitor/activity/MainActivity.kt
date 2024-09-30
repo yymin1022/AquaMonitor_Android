@@ -1,53 +1,37 @@
 package com.yong.aquamonitor.activity
 
-import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
-import android.graphics.Color
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.HydrationRecord
-import androidx.lifecycle.lifecycleScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.yong.aquamonitor.R
+import com.yong.aquamonitor.fragment.AlarmFragment
+import com.yong.aquamonitor.fragment.DetailFragment
+import com.yong.aquamonitor.fragment.HomeFragment
+import com.yong.aquamonitor.fragment.ProfileFragment
 import com.yong.aquamonitor.service.BleService
-import com.yong.aquamonitor.util.AquaMonitorData
 import com.yong.aquamonitor.util.HealthConnectUtil
-import com.yong.aquamonitor.util.HealthConnectUtil.getCurrentHydration
 import com.yong.aquamonitor.util.HealthConnectUtil.isHealthConnectAvail
-import com.yong.aquamonitor.util.HealthConnectUtil.updateHydration
 import com.yong.aquamonitor.util.Logger
 import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.Locale
-
 
 class MainActivity : AppCompatActivity() {
     private val healthPermissionList = setOf(
@@ -55,17 +39,12 @@ class MainActivity : AppCompatActivity() {
         HealthPermission.getWritePermission(HydrationRecord::class)
     )
 
-    private var btnConnectNew: ImageButton? = null
-    private var btnReqReset: ImageButton? = null
-    private var btnReqUpdate: ImageButton? = null
-    private var chartView: PieChart? = null
-    private var tvConnectStatus: TextView? = null
-    private var tvValue: TextView? = null
+    var bleService: BleService? = null
+    var bleDeviceAddress: String? = null
+    var isServiceBinded = false
 
-    private val bleReceiver = BleReceiver()
-    private var bleService: BleService? = null
-    private var bleDeviceAddress: String? = null
-    private var isServiceBinded = false
+    var bottomNavigation: ConstraintLayout? = null
+    var fragmentLayout: FrameLayout? = null
 
     private val bleServiceConnection = object: ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -75,7 +54,6 @@ class MainActivity : AppCompatActivity() {
             bleDeviceAddress?.let { id ->
                 Logger.LogI("Connecting to [$id]...")
                 bleService!!.connectBle(id)
-                tvConnectStatus!!.text = String.format("Connecting to [%s]...", id)
             }
         }
 
@@ -94,16 +72,6 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        btnConnectNew = findViewById(R.id.main_btn_connect_new)
-        btnReqReset = findViewById(R.id.main_btn_ble_request_reset)
-        btnReqUpdate = findViewById(R.id.main_btn_ble_request_update)
-        chartView = findViewById(R.id.main_pie_chart)
-        tvConnectStatus = findViewById(R.id.main_text_connect_status)
-        tvValue = findViewById(R.id.main_text_value)
-        btnConnectNew!!.setOnClickListener(btnListener)
-        btnReqReset!!.setOnClickListener(btnListener)
-        btnReqUpdate!!.setOnClickListener(btnListener)
 
         if(!isHealthConnectAvail(applicationContext)) {
             Logger.LogE("Health Connect is not Available")
@@ -127,13 +95,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         Logger.LogI("Successfully Initialized Application")
-        readHydrationValue()
-
-        val bleReceiverFilter = IntentFilter().apply {
-            addAction(BleService.ACTION_BLE_CONNECTED)
-            addAction(BleService.ACTION_BLE_DATA_RECEIVED)
-        }
-        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(bleReceiver, bleReceiverFilter)
 
         val lastMac = getLastMac()
         if(lastMac != null) {
@@ -142,61 +103,17 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, ConnectActivity::class.java))
         }
 
-        initChartView()
-        setChartView()
+        bottomNavigation = findViewById(R.id.main_nav)
+        fragmentLayout = findViewById(R.id.main_layout_fragment)
+        initNavigation()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(bleReceiver)
         if(isServiceBinded) {
             unbindService(bleServiceConnection)
             isServiceBinded = false
-        }
-    }
-
-    private fun initChartView() {
-        chartView!!.description.isEnabled = false
-        chartView!!.holeRadius = 85f
-        chartView!!.isRotationEnabled = false
-        chartView!!.legend.isEnabled = false
-        chartView!!.setBackgroundColor(Color.TRANSPARENT)
-        chartView!!.setDrawEntryLabels(false)
-        chartView!!.setHoleColor(Color.TRANSPARENT)
-        chartView!!.setTouchEnabled(false)
-    }
-
-    private fun setChartView() {
-        lifecycleScope.launch {
-            val hydrationCoffee = 250f
-            val hydrationBeverage = 100f
-            val hydrationWater = 600f
-            val hydrationValue = (hydrationBeverage * 0.8f + hydrationCoffee * 0.9f + hydrationWater)
-
-            val chartValues = arrayListOf(
-                PieEntry(hydrationWater, "Water"),
-                PieEntry(hydrationCoffee, "Coffee"),
-                PieEntry(hydrationBeverage, "Beverage")
-            )
-            val dataSet = PieDataSet(chartValues, "Test Values")
-            dataSet.setDrawValues(false)
-            dataSet.colors = listOf(
-                applicationContext.getColor(R.color.hydration_water),
-                applicationContext.getColor(R.color.hydration_coffee),
-                applicationContext.getColor(R.color.hydration_beverage)
-            )
-
-            chartView!!.maxAngle = if(hydrationValue < 2000) hydrationValue * 360f / 2000 else 360f
-            chartView!!.setData(PieData(dataSet))
-            chartView!!.animateX(1000, Easing.EaseInOutSine)
-        }
-    }
-
-    private fun readHydrationValue() {
-        lifecycleScope.launch {
-            val hydrationValue = getCurrentHydration(applicationContext)
-            tvValue!!.text = String.format(Locale.getDefault(), "%.0f%%", if(hydrationValue != null) hydrationValue / 20  else -1)
         }
     }
 
@@ -212,45 +129,40 @@ class MainActivity : AppCompatActivity() {
         bindService(serviceIntent, bleServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    private val btnListener = View.OnClickListener { view ->
-        when(view.id) {
-            R.id.main_btn_connect_new -> {
-                startActivity(Intent(this, ConnectActivity::class.java))
-            }
+    private fun initNavigation() {
+        val navAlarm = findViewById<LinearLayout>(R.id.main_nav_alarm)
+        val navDetail = findViewById<LinearLayout>(R.id.main_nav_detail)
+        val navHome = findViewById<LinearLayout>(R.id.main_nav_home)
+        val navProfile = findViewById<LinearLayout>(R.id.main_nav_profile)
 
-            R.id.main_btn_ble_request_reset -> {
-                bleService?.writeMessage("R")
-            }
-
-            R.id.main_btn_ble_request_update -> {
-                bleService?.writeMessage("U")
+        val navListener = View.OnClickListener { view ->
+            when(view.id) {
+                R.id.main_nav_alarm -> {
+                    supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, AlarmFragment()).commit()
+                }
+                R.id.main_nav_detail -> {
+                    supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, DetailFragment()).commit()
+                }
+                R.id.main_nav_home -> {
+                    supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, HomeFragment()).commit()
+                }
+                R.id.main_nav_profile -> {
+                    supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, ProfileFragment()).commit()
+                }
             }
         }
+
+        supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, HomeFragment()).commit()
+        navAlarm.setOnClickListener(navListener)
+        navDetail.setOnClickListener(navListener)
+        navHome.setOnClickListener(navListener)
+        navProfile.setOnClickListener(navListener)
     }
 
     private suspend fun checkPermissionsAndRun(requestPermissions: ActivityResultLauncher<Set<String>>, healthConnectClient: HealthConnectClient) {
         val granted = healthConnectClient.permissionController.getGrantedPermissions()
         if(!granted.containsAll(healthPermissionList)) {
             requestPermissions.launch(healthPermissionList)
-        }
-    }
-
-    inner class BleReceiver: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if(intent != null) {
-                Logger.LogD(intent.action.toString())
-                when(intent.action) {
-                    BleService.ACTION_BLE_CONNECTED -> {
-                        tvConnectStatus!!.text = String.format("Connected to [%s]", intent.getStringExtra("DEVICE_NAME"))
-                    }
-
-                    BleService.ACTION_BLE_DATA_RECEIVED -> {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            readHydrationValue()
-                        }
-                    }
-                }
-            }
         }
     }
 }
