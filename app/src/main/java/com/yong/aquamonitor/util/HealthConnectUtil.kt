@@ -55,15 +55,15 @@ object HealthConnectUtil {
         return hydrationValue
     }
 
-    suspend fun getTodayHydrationByType(context: Context, type: DrinkType): Double? {
+    suspend fun getTodayHydrationByType(context: Context, type: DrinkType): Float? {
         initHealthConnect(context)
 
-        var hydrationValue: Double? = null
+        var hydrationValue: Float? = null
         withContext(Dispatchers.IO) {
             Logger.LogI("Reading Current Value...")
             withContext(Dispatchers.IO) {
                 try {
-                    hydrationValue = 0.0
+                    hydrationValue = 0.0f
                     val recordRequest: ReadRecordsRequest<HydrationRecord> = ReadRecordsRequest(
                         timeRangeFilter = TimeRangeFilter.after(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)))
                     async {
@@ -71,7 +71,7 @@ object HealthConnectUtil {
                     }.await().records.forEach { record ->
                         val curRecordData = PreferenceUtil.getHealthData(record.metadata.id, context)
                         if(curRecordData?.type != null && curRecordData.type == type) {
-                            hydrationValue = hydrationValue!! + record.volume.inMilliliters
+                            hydrationValue = hydrationValue!! + record.volume.inMilliliters.toFloat()
                         }
                         Logger.LogI(record.metadata.id)
                     }
