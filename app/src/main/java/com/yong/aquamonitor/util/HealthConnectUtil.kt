@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.deleteRecords
 import androidx.health.connect.client.records.HydrationRecord
 import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
@@ -27,6 +28,21 @@ object HealthConnectUtil {
     fun getHealthConnectClient(context: Context): HealthConnectClient {
         initHealthConnect(context)
         return healthConnectClient!!
+    }
+
+    suspend fun deleteHydration(id: String, context: Context) {
+        initHealthConnect(context)
+
+        Logger.LogI("Deleting Health Data [$id]")
+
+        try {
+            healthConnectClient!!.deleteRecords<HydrationRecord>(
+                recordIdsList = listOf(id),
+                clientRecordIdsList = emptyList()
+            )
+        } catch(e: Exception) {
+            Logger.LogE("Health Connect Set Error: [$e]")
+        }
     }
 
     suspend fun getTodayHydration(context: Context): Double? {
