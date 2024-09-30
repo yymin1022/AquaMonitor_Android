@@ -66,7 +66,7 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
                 }
 
                 PreferenceUtil.saveHealthData(dataItem, requireActivity())
-                Logger.LogD(dataItem.id!!)
+                recyclerDetailAdapter!!.notifyItemChanged(position)
             }
             .show()
     }
