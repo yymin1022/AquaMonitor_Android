@@ -28,7 +28,7 @@ object HealthConnectUtil {
         return healthConnectClient!!
     }
 
-    suspend fun getCurrentHydration(context: Context): Double? {
+    suspend fun getTodayHydration(context: Context): Double? {
         initHealthConnect(context)
 
         var hydrationValue: Double? = null
