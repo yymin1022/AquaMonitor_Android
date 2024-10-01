@@ -51,7 +51,7 @@ class DetailDataRecyclerAdapter(
         val dataItem = dataList[position]
         holder.tvTimeFrom.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(dataItem.timeFrom)
         holder.tvTimeTo.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(dataItem.timeTo)
-        holder.tvValue.text = String.format(Locale.getDefault(), "%dml", dataItem.value)
+        holder.tvValue.text = String.format(Locale.getDefault(), "%dml", dataItem.value.toInt())
 
         if(dataItem.id == null) {
             holder.icDelete.visibility = View.INVISIBLE
@@ -59,7 +59,7 @@ class DetailDataRecyclerAdapter(
             holder.icType.visibility = View.INVISIBLE
             holder.tvTimeFrom.visibility = View.INVISIBLE
             holder.tvTimeTo.visibility = View.INVISIBLE
-            holder.tvValue.text = SimpleDateFormat("MM/DD", Locale.getDefault()).format(dataItem.timeFrom)
+            holder.tvValue.text = SimpleDateFormat("MM/dd", Locale.getDefault()).format(dataItem.timeFrom)
             return
         }
 
