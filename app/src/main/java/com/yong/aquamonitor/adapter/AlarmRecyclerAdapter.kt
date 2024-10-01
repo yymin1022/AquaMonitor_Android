@@ -4,14 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.util.AlarmData
-import com.yong.aquamonitor.util.AquaMonitorData
-import com.yong.aquamonitor.util.DrinkType
-import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AlarmRecyclerAdapter(
