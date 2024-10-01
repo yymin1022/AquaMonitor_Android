@@ -61,6 +61,7 @@ class DetailFragment: Fragment(), DetailDataRecyclerAdapter.OnItemClickListener 
     override fun onItemDeleteClick(position: Int, dataItem: AquaMonitorData) {
         lifecycleScope.launch {
             HealthConnectUtil.deleteHydration(dataItem.id ?: "", requireActivity())
+            detailDataList.removeAt(position)
             recyclerDetailAdapter!!.notifyItemRemoved(position)
         }
     }
