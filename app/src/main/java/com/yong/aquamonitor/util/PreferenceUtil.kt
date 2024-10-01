@@ -88,6 +88,15 @@ object PreferenceUtil {
         }
     }
 
+    fun saveProfileData(target: Int, name: String, context: Context) {
+        initPreference(context)
+
+        val prefEd = pref!!.edit()
+        prefEd.putInt("TARGET_VALUE", target)
+        prefEd.putString("PROFILE_NAME", name)
+        prefEd.apply()
+    }
+
     fun getLastMacAddress(context: Context): String? {
         initPreference(context)
         return pref!!.getString("MAC_ADDRESS", null)
