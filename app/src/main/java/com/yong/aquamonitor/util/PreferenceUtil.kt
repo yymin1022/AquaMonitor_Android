@@ -72,10 +72,11 @@ object PreferenceUtil {
     fun saveAlarmList(data: MutableList<AlarmData>, context: Context) {
         initPreference(context)
 
+        val dataSorted = data.sortedWith(compareBy<AlarmData> { it.hour }.thenBy { it.min })
         try {
             ByteArrayOutputStream().use { byteArrayOutputStream ->
                 ObjectOutputStream(byteArrayOutputStream).use { objectOutputStream ->
-                    objectOutputStream.writeObject(data)
+                    objectOutputStream.writeObject(dataSorted)
                     val dataEncoded = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray())
 
                     val prefEd = pref!!.edit()
