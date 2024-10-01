@@ -71,9 +71,12 @@ class BleService: Service() {
             return false
         }
 
-        bleAdapter = (getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
-        val bleDevice = bleAdapter!!.getRemoteDevice(deviceAddr)
-        bleGatt = bleDevice.connectGatt(this, true, gattCallback, 2)
+        if(bleAdapter == null && bleGatt == null) {
+            bleAdapter = (getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
+            val bleDevice = bleAdapter!!.getRemoteDevice(deviceAddr)
+            bleGatt = bleDevice.connectGatt(this, true, gattCallback, 2)
+        }
+
         return true
     }
 
