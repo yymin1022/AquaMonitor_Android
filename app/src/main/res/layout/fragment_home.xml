@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="오늘은 100ml 더 마사면 목표를 당성해요!"
+        android:text="오늘은 100ml 더 마사면 목표를 달성해요!"
         android:id="@+id/main_home_target_remain"
         app:layout_constraintBottom_toTopOf="@id/main_home_alarm_time"
         app:layout_constraintEnd_toEndOf="parent"
