@@ -49,12 +49,14 @@ class MainActivity : AppCompatActivity() {
 
     private val bleServiceConnection = object: ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val serviceBinder = service as BleService.LocalBinder
-            bleService = serviceBinder.getService()
-            isServiceBinded = true
-            bleDeviceAddress?.let { id ->
-                Logger.LogI("Connecting to [$id]...")
-                bleService!!.connectBle(id)
+            if(!isServiceBinded) {
+                val serviceBinder = service as BleService.LocalBinder
+                bleService = serviceBinder.getService()
+                isServiceBinded = true
+                bleDeviceAddress?.let { id ->
+                    Logger.LogI("Connecting to [$id]...")
+                    bleService!!.connectBle(id)
+                }
             }
         }
 
