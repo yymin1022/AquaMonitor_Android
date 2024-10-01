@@ -38,7 +38,7 @@ class BleService: Service() {
 
     private var aquaCurCycle = -1
     private var aquaCurStartTime = 0L
-    private var aquaCurValue = 0.0
+    var aquaCurValue = 0.0
 
     private var bleAdapter: BluetoothAdapter? = null
     private var bleGatt: BluetoothGatt? = null
