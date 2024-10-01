@@ -14,10 +14,8 @@ import com.yong.aquamonitor.adapter.DetailDataRecyclerAdapter
 import com.yong.aquamonitor.util.AquaMonitorData
 import com.yong.aquamonitor.util.DrinkType
 import com.yong.aquamonitor.util.HealthConnectUtil
-import com.yong.aquamonitor.util.Logger
 import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
