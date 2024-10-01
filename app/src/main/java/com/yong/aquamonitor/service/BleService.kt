@@ -41,7 +41,7 @@ class BleService: Service() {
     var aquaCurValue = 0.0
 
     private var bleAdapter: BluetoothAdapter? = null
-    private var bleGatt: BluetoothGatt? = null
+    var bleGatt: BluetoothGatt? = null
 
     private val binder = LocalBinder()
 

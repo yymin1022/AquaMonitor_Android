@@ -79,6 +79,11 @@ class AnalyticsFragment: Fragment() {
         initChartView()
         readHydrationValue()
 
+        if((activity as MainActivity).bleService?.bleGatt != null) {
+            val btDevice = (activity as MainActivity).bleService?.bleGatt!!.device
+            tvConnectStatus!!.text = String.format("[%s]에 연결되었습니다.", btDevice?.name)
+        }
+
         val bleReceiverFilter = IntentFilter().apply {
             addAction(BleService.ACTION_BLE_CONNECTED)
             addAction(BleService.ACTION_BLE_DATA_RECEIVED)
