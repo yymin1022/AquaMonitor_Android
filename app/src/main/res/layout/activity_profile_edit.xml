@@ -147,4 +147,11 @@
 
     </LinearLayout>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="저장"
+        android:id="@+id/profile_edit_btn_save" />
+
 </LinearLayout>
