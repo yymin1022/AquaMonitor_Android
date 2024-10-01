@@ -44,7 +44,7 @@
         android:layout_height="20dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_delete"
-        android:id="@+id/recycler_item_detail_delete"
+        android:id="@+id/recycler_item_alarm_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
