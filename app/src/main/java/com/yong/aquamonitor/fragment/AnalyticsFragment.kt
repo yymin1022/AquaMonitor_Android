@@ -26,6 +26,7 @@ import com.yong.aquamonitor.service.BleService
 import com.yong.aquamonitor.util.DrinkType
 import com.yong.aquamonitor.util.HealthConnectUtil
 import com.yong.aquamonitor.util.Logger
+import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,6 +38,7 @@ class AnalyticsFragment: Fragment() {
     private var btnReqUpdate: ImageButton? = null
     private var chartView: PieChart? = null
     private var tvConnectStatus: TextView? = null
+    private var tvGoal: TextView? = null
     private var tvHydrationBeveragePerc: TextView? = null
     private var tvHydrationBeverageValue: TextView? = null
     private var tvHydrationCoffeePerc: TextView? = null
@@ -46,6 +48,7 @@ class AnalyticsFragment: Fragment() {
     private var tvValue: TextView? = null
 
     private val bleReceiver = BleReceiver()
+    private var targetValue = 2000
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +60,7 @@ class AnalyticsFragment: Fragment() {
         btnReqUpdate = layoutInflater.findViewById(R.id.main_analytics_btn_ble_request_update)
         chartView = layoutInflater.findViewById(R.id.main_analytics_pie_chart)
         tvConnectStatus = layoutInflater.findViewById(R.id.main_analytics_text_connect_status)
+        tvGoal = layoutInflater.findViewById(R.id.main_analytics_text_goal)
         tvHydrationBeveragePerc = layoutInflater.findViewById(R.id.main_analytics_card_perc_beverage)
         tvHydrationBeverageValue = layoutInflater.findViewById(R.id.main_analytics_card_value_beverage)
         tvHydrationCoffeePerc = layoutInflater.findViewById(R.id.main_analytics_card_perc_coffee)
@@ -68,6 +72,9 @@ class AnalyticsFragment: Fragment() {
         btnConnectNew!!.setOnClickListener(btnListener)
         btnReqReset!!.setOnClickListener(btnListener)
         btnReqUpdate!!.setOnClickListener(btnListener)
+
+        targetValue = PreferenceUtil.getProfileTarget(requireActivity())
+        tvGoal!!.text = String.format(Locale.getDefault(), "오늘은 %dml의\n물을 마셔야 해요!", targetValue)
 
         initChartView()
         readHydrationValue()
@@ -95,13 +102,13 @@ class AnalyticsFragment: Fragment() {
             val hydrationValue = hydrationBeverage * 0.8f + hydrationCoffee * 0.9f + hydrationWater
             setChartView(hydrationValue, hydrationBeverage * 0.8f, hydrationCoffee * 0.9f, hydrationWater)
 
-            tvHydrationBeveragePerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationBeverage.toInt() / 20)
+            tvHydrationBeveragePerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationBeverage.toInt() * 100 / targetValue)
             tvHydrationBeverageValue!!.text = String.format(Locale.getDefault(), "%dml", hydrationBeverage.toInt())
-            tvHydrationCoffeePerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationCoffee.toInt() / 20)
+            tvHydrationCoffeePerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationCoffee.toInt() * 100 / targetValue)
             tvHydrationCoffeeValue!!.text = String.format(Locale.getDefault(), "%dml", hydrationCoffee.toInt())
-            tvHydrationWaterPerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationWater.toInt() / 20)
+            tvHydrationWaterPerc!!.text = String.format(Locale.getDefault(), "%d%%", hydrationWater.toInt() * 100 / targetValue)
             tvHydrationWaterValue!!.text = String.format(Locale.getDefault(), "%dml", hydrationWater.toInt())
-            tvValue!!.text = String.format(Locale.getDefault(), "%.0f%%",  hydrationValue / 20)
+            tvValue!!.text = String.format(Locale.getDefault(), "%.0f%%",  hydrationValue * 100 / targetValue)
         }
     }
 
@@ -122,7 +129,7 @@ class AnalyticsFragment: Fragment() {
                 PieEntry(hydrationWater, "Water"),
                 PieEntry(hydrationCoffee, "Coffee"),
                 PieEntry(hydrationBeverage, "Beverage"),
-                PieEntry(2000 - hydrationValue, "Remain")
+                PieEntry(targetValue - hydrationValue, "Remain")
             )
             val dataSet = PieDataSet(chartValues, "Test Values")
             dataSet.setDrawValues(false)
