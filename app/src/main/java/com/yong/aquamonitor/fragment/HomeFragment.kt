@@ -11,8 +11,10 @@ import com.yong.aquamonitor.R
 import com.yong.aquamonitor.activity.MainActivity
 import com.yong.aquamonitor.util.DrinkType
 import com.yong.aquamonitor.util.HealthConnectUtil
+import com.yong.aquamonitor.util.Logger
 import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.util.Locale
 import kotlin.math.max
 
@@ -37,7 +39,16 @@ class HomeFragment: Fragment() {
     }
 
     private fun setNextAlarmView() {
-
+        val curTime = LocalDateTime.now()
+        val alarmList = PreferenceUtil.getAlarmList(requireActivity())
+        for(alarmData in alarmList) {
+            if((alarmData.hour == curTime.hour && alarmData.min >= curTime.minute)
+                || alarmData.hour > curTime.hour) {
+                tvAlarmTime!!.text = String.format(Locale.getDefault(), "%02d:%02d", alarmData.hour, alarmData.min)
+                tvAlarmValue!!.text = String.format(Locale.getDefault(), "%dml", alarmData.value)
+                break
+            }
+        }
     }
 
     private fun setTargetRemainView() {
