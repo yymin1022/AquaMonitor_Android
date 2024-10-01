@@ -42,7 +42,7 @@ class AlarmRecyclerAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val dataItem = dataList[position]
-        holder.tvTime.text = String.format(Locale.getDefault(), "%d:%d", dataItem.hour, dataItem.min)
+        holder.tvTime.text = String.format(Locale.getDefault(), "%02d:%02d", dataItem.hour, dataItem.min)
         holder.tvValue.text = String.format(Locale.getDefault(), "%dml", dataItem.value)
     }
 
