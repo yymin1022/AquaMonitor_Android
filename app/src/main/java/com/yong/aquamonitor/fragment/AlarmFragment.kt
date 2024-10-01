@@ -60,7 +60,9 @@ class AlarmFragment: Fragment(), AlarmRecyclerAdapter.OnItemClickListener {
     private val btnListener = View.OnClickListener { view ->
         when(view.id) {
             R.id.main_alarm_btn_add -> {
-                
+                alarmDataList.add(AlarmData(8, 20, 400))
+                PreferenceUtil.saveAlarmList(alarmDataList, requireActivity())
+                recyclerAlarmAdapter!!.notifyItemInserted(alarmDataList.size)
             }
         }
     }
