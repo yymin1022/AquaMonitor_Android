@@ -97,7 +97,7 @@ class AnalyticsFragment: Fragment() {
         lifecycleScope.launch {
             val hydrationBeverage = HealthConnectUtil.getTodayHydrationByType(requireActivity(), DrinkType.DRINK_BEVERAGE) ?: 0.0f
             val hydrationCoffee = HealthConnectUtil.getTodayHydrationByType(requireActivity(), DrinkType.DRINK_COFFEE) ?: 0.0f
-            val hydrationWater = HealthConnectUtil.getTodayHydrationByType(requireActivity(), DrinkType.DRINK_WATER) ?: 0.0f
+            val hydrationWater = (HealthConnectUtil.getTodayHydrationByType(requireActivity(), DrinkType.DRINK_WATER) ?: 0.0f) + (activity as MainActivity).bleService!!.aquaCurValue.toFloat()
 
             val hydrationValue = hydrationBeverage * 0.8f + hydrationCoffee * 0.9f + hydrationWater
             setChartView(hydrationValue, hydrationBeverage * 0.8f, hydrationCoffee * 0.9f, hydrationWater)
