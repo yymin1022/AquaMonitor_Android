@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.TimePicker
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yong.aquamonitor.R
@@ -53,9 +56,26 @@ class AlarmFragment: Fragment(), AlarmRecyclerAdapter.OnItemClickListener {
     private val btnListener = View.OnClickListener { view ->
         when(view.id) {
             R.id.main_alarm_btn_add -> {
-                alarmDataList.add(AlarmData(8, 20, 400))
-                PreferenceUtil.saveAlarmList(alarmDataList, requireActivity())
-                recyclerAlarmAdapter!!.notifyItemInserted(alarmDataList.size)
+                val dialogView = layoutInflater.inflate(R.layout.dialog_alarm_add, null)
+                val dialogTimeInput = dialogView.findViewById<TimePicker>(R.id.dialog_alarm_add_time)
+                val dialogValueInput = dialogView.findViewById<EditText>(R.id.dialog_alarm_add_value)
+                dialogTimeInput.setIs24HourView(true)
+
+                AlertDialog.Builder(requireActivity())
+                    .setView(dialogView)
+                    .setPositiveButton("확인") { _, _ ->
+                        val inputHour = dialogTimeInput.hour
+                        val inputMinute = dialogTimeInput.minute
+                        val inputValue = dialogValueInput.text.toString().toIntOrNull()
+
+                        if(inputValue != null) {
+                            alarmDataList.add(AlarmData(inputHour, inputMinute, inputValue))
+                            PreferenceUtil.saveAlarmList(alarmDataList, requireActivity())
+                            recyclerAlarmAdapter!!.notifyItemInserted(alarmDataList.size)
+                        }
+                    }
+                    .setNegativeButton("취소", null)
+                    .show()
             }
         }
     }
