@@ -126,12 +126,12 @@ class AnalyticsFragment: Fragment() {
     private fun setChartView(hydrationValue: Float, hydrationBeverage: Float, hydrationCoffee: Float, hydrationWater: Float) {
         lifecycleScope.launch {
             val chartValues = arrayListOf(
-                PieEntry(hydrationWater, "Water"),
-                PieEntry(hydrationCoffee, "Coffee"),
-                PieEntry(hydrationBeverage, "Beverage"),
-                PieEntry(targetValue - hydrationValue, "Remain")
+                PieEntry(hydrationWater, "물"),
+                PieEntry(hydrationCoffee, "커피"),
+                PieEntry(hydrationBeverage, "음료"),
+                PieEntry(targetValue - hydrationValue, "")
             )
-            val dataSet = PieDataSet(chartValues, "Test Values")
+            val dataSet = PieDataSet(chartValues, "Aqua Monitor")
             dataSet.setDrawValues(false)
             dataSet.colors = listOf(
                 requireActivity().getColor(R.color.hydration_water),
