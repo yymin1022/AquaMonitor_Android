@@ -18,6 +18,7 @@ import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.yong.aquamonitor.util.AquaMonitorData
+import com.yong.aquamonitor.util.DrinkType
 import com.yong.aquamonitor.util.HealthConnectUtil
 import com.yong.aquamonitor.util.Logger
 import com.yong.aquamonitor.util.PreferenceUtil
@@ -130,7 +131,7 @@ class BleService: Service() {
 
     private suspend fun saveData(cycle: Int, value: Double) {
         val curTime = System.currentTimeMillis()
-        val tmpData = AquaMonitorData(aquaCurCycle, aquaCurValue, aquaCurStartTime, curTime, null, null)
+        val tmpData = AquaMonitorData(aquaCurCycle, aquaCurValue, aquaCurStartTime, curTime, DrinkType.DRINK_WATER, null)
 
         val savedID = HealthConnectUtil.updateHydration(tmpData, applicationContext) ?: return
         tmpData.id = savedID
