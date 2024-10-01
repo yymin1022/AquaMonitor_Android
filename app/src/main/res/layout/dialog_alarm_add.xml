@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:timePickerMode="spinner"
-        android:is24HourView="true"
         android:id="@+id/dialog_alarm_add_time" />
 
     <EditText
