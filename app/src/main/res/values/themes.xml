@@ -3,7 +3,7 @@
     <style name="Base.Theme.AquaMonitor" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:fontFamily">@font/gmarket_sans_light</item>
+        <item name="android:fontFamily">@font/gmarket_sans_medium</item>
     </style>
 
     <style name="Theme.AquaMonitor" parent="Base.Theme.AquaMonitor" />
