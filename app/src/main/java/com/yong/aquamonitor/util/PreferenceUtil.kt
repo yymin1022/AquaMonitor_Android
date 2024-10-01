@@ -56,7 +56,7 @@ object PreferenceUtil {
     fun getAlarmList(context: Context): MutableList<AlarmData> {
         initPreference(context)
 
-        val dataEncoded = pref!!.getString("ALARM_LIST", null) ?: return mutableListOf<AlarmData>()
+        val dataEncoded = pref!!.getString("ALARM_LIST", null) ?: return mutableListOf()
         try {
             ByteArrayInputStream(Base64.getDecoder().decode(dataEncoded)).use { byteArrayInputStream ->
                 ObjectInputStream(byteArrayInputStream).use { objectInputStream ->
@@ -65,7 +65,7 @@ object PreferenceUtil {
             }
         } catch (e: java.lang.Exception) {
             Logger.LogE("Error when loading: $e")
-            return mutableListOf<AlarmData>()
+            return mutableListOf()
         }
     }
 
