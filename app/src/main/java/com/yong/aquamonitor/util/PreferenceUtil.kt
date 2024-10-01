@@ -88,6 +88,16 @@ object PreferenceUtil {
         }
     }
 
+    fun getProfileName(context: Context): String {
+        initPreference(context)
+        return pref!!.getString("PROFILE_NAME", "DIFFAMP") ?: "DIFFAMP"
+    }
+
+    fun getProfileTarget(context: Context): Int {
+        initPreference(context)
+        return pref!!.getInt("TARGET_VALUE", 1000)
+    }
+
     fun saveProfileData(target: Int, name: String, context: Context) {
         initPreference(context)
 
