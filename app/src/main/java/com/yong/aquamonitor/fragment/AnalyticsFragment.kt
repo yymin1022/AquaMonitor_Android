@@ -169,7 +169,7 @@ class AnalyticsFragment: Fragment() {
                 Logger.LogD(intent.action.toString())
                 when(intent.action) {
                     BleService.ACTION_BLE_CONNECTED -> {
-                        tvConnectStatus!!.text = String.format("Connected to [%s]", intent.getStringExtra("DEVICE_NAME"))
+                        tvConnectStatus!!.text = String.format("[%s]에 연결되었습니다.", intent.getStringExtra("DEVICE_NAME"))
                     }
 
                     BleService.ACTION_BLE_DATA_RECEIVED -> {
