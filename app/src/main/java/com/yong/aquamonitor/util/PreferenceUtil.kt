@@ -8,7 +8,6 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.Base64
 
-
 object PreferenceUtil {
     private var pref: SharedPreferences? = null
 
@@ -51,6 +50,41 @@ object PreferenceUtil {
         } catch (e: Exception) {
             Logger.LogE("Error when saving: $e")
             return
+        }
+    }
+
+    fun getAlarmList(context: Context): MutableList<AlarmData> {
+        initPreference(context)
+
+        val dataEncoded = pref!!.getString("ALARM_LIST", null) ?: return mutableListOf<AlarmData>()
+        try {
+            ByteArrayInputStream(Base64.getDecoder().decode(dataEncoded)).use { byteArrayInputStream ->
+                ObjectInputStream(byteArrayInputStream).use { objectInputStream ->
+                    return objectInputStream.readObject() as MutableList<AlarmData>
+                }
+            }
+        } catch (e: java.lang.Exception) {
+            Logger.LogE("Error when loading: $e")
+            return mutableListOf<AlarmData>()
+        }
+    }
+
+    fun saveAlarmList(data: MutableList<AlarmData>, context: Context) {
+        initPreference(context)
+
+        try {
+            ByteArrayOutputStream().use { byteArrayOutputStream ->
+                ObjectOutputStream(byteArrayOutputStream).use { objectOutputStream ->
+                    objectOutputStream.writeObject(data)
+                    val dataEncoded = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray())
+
+                    val prefEd = pref!!.edit()
+                    prefEd.putString("ALARM_LIST", dataEncoded)
+                    prefEd.apply()
+                }
+            }
+        } catch (e: java.lang.Exception) {
+            Logger.LogE("Error when loading: $e")
         }
     }
 
