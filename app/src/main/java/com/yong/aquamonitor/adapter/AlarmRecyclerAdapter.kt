@@ -14,7 +14,6 @@ class AlarmRecyclerAdapter(
     private val dataList: List<AlarmData>,
     private val itemDeleteClickListener: OnItemClickListener
 ): RecyclerView.Adapter<AlarmRecyclerAdapter.ViewHolder>() {
-
     interface OnItemClickListener {
         fun onItemDeleteClick(position: Int)
     }
