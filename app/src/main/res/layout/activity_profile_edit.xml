@@ -80,6 +80,7 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="남성"
                 android:id="@+id/profile_edit_radio_gender_male" />
 
@@ -110,6 +111,7 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:text="수유 중"
             android:textSize="15sp"
             android:id="@+id/profile_edit_check_lactation" />
@@ -141,6 +143,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:hint="다이어트 중 하루 섭취 열량 (kcal)"
             android:textSize="15sp"
             android:id="@+id/profile_edit_input_diet_calorie" />
