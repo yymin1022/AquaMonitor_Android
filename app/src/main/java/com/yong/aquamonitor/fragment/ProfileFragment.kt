@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.yong.aquamonitor.R
 import com.yong.aquamonitor.activity.ConnectActivity
+import com.yong.aquamonitor.activity.ProfileEditActivity
 
 class ProfileFragment: Fragment() {
     private var btnBluetooth: ConstraintLayout? = null
@@ -35,7 +36,7 @@ class ProfileFragment: Fragment() {
             }
 
             R.id.main_profile_btn_edit -> {
-
+                startActivity(Intent(requireActivity(), ProfileEditActivity::class.java))
             }
         }
     }
