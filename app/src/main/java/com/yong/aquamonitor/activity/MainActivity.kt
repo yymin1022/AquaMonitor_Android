@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
@@ -134,26 +135,56 @@ class MainActivity : AppCompatActivity() {
 
     private fun initNavigation() {
         val navAlarm = findViewById<LinearLayout>(R.id.main_nav_alarm)
+        val navAlarmIcon = findViewById<ImageView>(R.id.main_nav_alarm_icon)
         val navAnalytics = findViewById<LinearLayout>(R.id.main_nav_analytics)
+        val navAnalyticsIcon = findViewById<ImageView>(R.id.main_nav_analytics_icon)
         val navDetail = findViewById<LinearLayout>(R.id.main_nav_detail)
+        val navDetailIcon = findViewById<ImageView>(R.id.main_nav_detail_icon)
         val navHome = findViewById<LinearLayout>(R.id.main_nav_home)
+        val navHomeIcon = findViewById<ImageView>(R.id.main_nav_home_icon)
         val navProfile = findViewById<LinearLayout>(R.id.main_nav_profile)
+        val navProfileIcon = findViewById<ImageView>(R.id.main_nav_profile_icon)
 
         val navListener = View.OnClickListener { view ->
             when(view.id) {
                 R.id.main_nav_alarm -> {
+                    navAlarmIcon.setImageResource(R.drawable.ic_nav_alarm_enabled)
+                    navAnalyticsIcon.setImageResource(R.drawable.ic_nav_analytics_disabled)
+                    navDetailIcon.setImageResource(R.drawable.ic_nav_detail_disabled)
+                    navHomeIcon.setImageResource(R.drawable.ic_nav_home_disabled)
+                    navProfileIcon.setImageResource(R.drawable.ic_nav_profile_disabled)
                     supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, AlarmFragment()).commit()
                 }
                 R.id.main_nav_analytics -> {
+                    navAlarmIcon.setImageResource(R.drawable.ic_nav_alarm_disabled)
+                    navAnalyticsIcon.setImageResource(R.drawable.ic_nav_analytics_enabled)
+                    navDetailIcon.setImageResource(R.drawable.ic_nav_detail_disabled)
+                    navHomeIcon.setImageResource(R.drawable.ic_nav_home_disabled)
+                    navProfileIcon.setImageResource(R.drawable.ic_nav_profile_disabled)
                     supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, AnalyticsFragment()).commit()
                 }
                 R.id.main_nav_detail -> {
+                    navAlarmIcon.setImageResource(R.drawable.ic_nav_alarm_disabled)
+                    navAnalyticsIcon.setImageResource(R.drawable.ic_nav_analytics_disabled)
+                    navDetailIcon.setImageResource(R.drawable.ic_nav_detail_enabled)
+                    navHomeIcon.setImageResource(R.drawable.ic_nav_home_disabled)
+                    navProfileIcon.setImageResource(R.drawable.ic_nav_profile_disabled)
                     supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, DetailFragment()).commit()
                 }
                 R.id.main_nav_home -> {
+                    navAlarmIcon.setImageResource(R.drawable.ic_nav_alarm_disabled)
+                    navAnalyticsIcon.setImageResource(R.drawable.ic_nav_analytics_disabled)
+                    navDetailIcon.setImageResource(R.drawable.ic_nav_detail_disabled)
+                    navHomeIcon.setImageResource(R.drawable.ic_nav_home_enabled)
+                    navProfileIcon.setImageResource(R.drawable.ic_nav_profile_disabled)
                     supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, HomeFragment()).commit()
                 }
                 R.id.main_nav_profile -> {
+                    navAlarmIcon.setImageResource(R.drawable.ic_nav_alarm_disabled)
+                    navAnalyticsIcon.setImageResource(R.drawable.ic_nav_analytics_disabled)
+                    navDetailIcon.setImageResource(R.drawable.ic_nav_detail_disabled)
+                    navHomeIcon.setImageResource(R.drawable.ic_nav_home_disabled)
+                    navProfileIcon.setImageResource(R.drawable.ic_nav_profile_enabled)
                     supportFragmentManager.beginTransaction().replace(fragmentLayout!!.id, ProfileFragment()).commit()
                 }
             }

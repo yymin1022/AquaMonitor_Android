@@ -38,10 +38,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home" />
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_nav_home_enabled"
+                android:id="@+id/main_nav_home_icon" />
 
         </LinearLayout>
 
@@ -56,10 +57,11 @@
             app:layout_constraintStart_toEndOf="@id/main_nav_detail"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Analytixs" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_nav_analytics_disabled"
+                android:id="@+id/main_nav_analytics_icon" />
 
         </LinearLayout>
 
@@ -74,10 +76,11 @@
             app:layout_constraintStart_toEndOf="@id/main_nav_analytics"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Detail" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_nav_detail_disabled"
+                android:id="@+id/main_nav_detail_icon" />
 
         </LinearLayout>
 
@@ -92,10 +95,11 @@
             app:layout_constraintStart_toEndOf="@id/main_nav_detail"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Alarm" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_nav_alarm_disabled"
+                android:id="@+id/main_nav_alarm_icon" />
 
         </LinearLayout>
 
@@ -110,10 +114,11 @@
             app:layout_constraintStart_toEndOf="@id/main_nav_alarm"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_nav_profile_disabled"
+                android:id="@+id/main_nav_profile_icon" />
 
         </LinearLayout>
 
