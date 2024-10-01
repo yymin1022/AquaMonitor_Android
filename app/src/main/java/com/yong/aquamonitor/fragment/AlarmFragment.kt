@@ -68,6 +68,8 @@ class AlarmFragment: Fragment(), AlarmRecyclerAdapter.OnItemClickListener {
     }
 
     override fun onItemDeleteClick(position: Int) {
-        TODO("Not yet implemented")
+        alarmDataList.removeAt(position)
+        PreferenceUtil.saveAlarmList(alarmDataList, requireActivity())
+        recyclerAlarmAdapter!!.notifyItemRemoved(position)
     }
 }
