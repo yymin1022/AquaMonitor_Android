@@ -8,8 +8,8 @@
     tools:context=".fragment.HomeFragment">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:src="@drawable/ic_waterdrop"
         android:id="@+id/main_home_target_icon"
         app:layout_constraintBottom_toTopOf="@id/main_home_target_title"
@@ -119,9 +119,9 @@
         app:layout_constraintTop_toBottomOf="@id/main_home_target_remain" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_waterdrop"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_alarm"
         android:id="@+id/main_home_alarm_icon"
         app:layout_constraintBottom_toTopOf="@id/main_home_alarm_title"
         app:layout_constraintEnd_toEndOf="parent"
