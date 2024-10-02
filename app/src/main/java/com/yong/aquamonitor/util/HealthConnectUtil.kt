@@ -58,7 +58,6 @@ object HealthConnectUtil {
                     healthConnectClient!!.readRecords(recordRequest)
                 }.await().records.forEach { record ->
                     hydrationValue = hydrationValue!! + record.volume.inMilliliters
-                    Logger.LogI(record.metadata.id)
                 }
             } catch(e: Exception) {
                 Logger.LogE("Health Connect Get Error: [$e]")
@@ -84,7 +83,6 @@ object HealthConnectUtil {
                     if(curRecordData?.type != null && curRecordData.type == type) {
                         hydrationValue = hydrationValue!! + record.volume.inMilliliters.toFloat()
                     }
-                    Logger.LogI(record.metadata.id)
                 }
             } catch(e: Exception) {
                 Logger.LogE("Health Connect Get Error: [$e]")
@@ -109,7 +107,6 @@ object HealthConnectUtil {
                     if(curRecordData != null) {
                         dataList.add(curRecordData)
                     }
-                    Logger.LogI(record.metadata.id)
                 }
             } catch(e: Exception) {
                 Logger.LogE("Health Connect Get Error: [$e]")
