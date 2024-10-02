@@ -7,34 +7,229 @@
     android:layout_height="match_parent"
     tools:context=".fragment.HomeFragment">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="오늘은 100ml 더 마사면 목표를 달성해요!"
-        android:id="@+id/main_home_target_remain"
-        app:layout_constraintBottom_toTopOf="@id/main_home_alarm_time"
+        android:src="@drawable/ic_waterdrop"
+        android:id="@+id/main_home_target_icon"
+        app:layout_constraintBottom_toTopOf="@id/main_home_target_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:id="@+id/main_home_target_title"
+        app:layout_constraintBottom_toTopOf="@id/main_home_target_done"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_home_target_icon">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="오늘의 "
+            android:textSize="20sp"
+            android:id="@+id/main_home_target_title_black"
+            app:layout_constraintBottom_toTopOf="@id/main_home_target_done"
+            app:layout_constraintEnd_toStartOf="@id/main_home_target_title_blue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/main_home_target_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="수분 섭취량"
+            android:textColor="@color/aqua_blue"
+            android:textSize="20sp"
+            android:id="@+id/main_home_target_title_blue"
+            app:layout_constraintBottom_toTopOf="@id/main_home_target_done"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/main_home_target_title_black"
+            app:layout_constraintTop_toBottomOf="@id/main_home_target_icon" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1100ml"
+        android:textColor="@color/aqua_blue"
+        android:textSize="90sp"
+        android:textStyle="bold"
+        android:id="@+id/main_home_target_done"
+        app:layout_constraintBottom_toTopOf="@id/main_home_target_remain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_home_target_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:id="@+id/main_home_target_remain"
+        app:layout_constraintBottom_toTopOf="@id/main_home_divider_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_home_target_done">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="오늘 목표 수분 섭취량 달성까지"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1200ml"
+                android:textColor="@color/aqua_blue"
+                android:textSize="20sp"
+                android:id="@+id/main_home_target_remain_value" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 남았어요!"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="30dp"
+        android:layout_height="0.5dp"
+        android:background="@color/black"
+        android:id="@+id/main_home_divider_1"
+        app:layout_constraintBottom_toTopOf="@id/main_home_alarm_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_home_target_remain" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_waterdrop"
+        android:id="@+id/main_home_alarm_icon"
+        app:layout_constraintBottom_toTopOf="@id/main_home_alarm_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_home_divider_1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="다음 수분 섭취 알림"
+        android:textSize="20sp"
+        android:id="@+id/main_home_alarm_title"
+        app:layout_constraintBottom_toTopOf="@id/main_home_alarm_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_home_alarm_icon" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00:00"
+        android:textColor="@color/aqua_blue"
+        android:textSize="30sp"
+        android:textStyle="bold"
         android:id="@+id/main_home_alarm_time"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/main_home_alarm_value"
+        app:layout_constraintBottom_toTopOf="@id/main_home_divider_2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_home_target_remain" />
+        app:layout_constraintTop_toBottomOf="@id/main_home_alarm_title" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <View
+        android:layout_width="30dp"
+        android:layout_height="0.5dp"
+        android:background="@color/black"
+        android:id="@+id/main_home_divider_2"
+        app:layout_constraintBottom_toTopOf="@id/main_home_weekly_stat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_home_alarm_time" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="100ml"
-        android:id="@+id/main_home_alarm_value"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:id="@+id/main_home_weekly_stat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/main_home_alarm_time"
-        app:layout_constraintTop_toBottomOf="@id/main_home_target_remain" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_home_divider_2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지난 7일 목표 달성률"
+            android:textSize="17sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_home_weekly_gray"/>
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_home_weekly_blue"/>
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_home_weekly_gray"/>
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_home_weekly_blue"/>
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_home_weekly_blue"/>
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_home_weekly_blue"/>
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_home_weekly_gray"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
