@@ -4,6 +4,8 @@
     <color name="divider_gray">#21212133</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="aqua_blue">#539DF3</color>
+    <color name="aqua_gray">#D9D9D9</color>
     <color name="hydration_beverage">#FF000000</color>
     <color name="hydration_coffee">#FF937B72</color>
     <color name="hydration_water">#FFA7D5FF</color>
