@@ -43,6 +43,7 @@ class BleService: Service() {
 
     private var bleAdapter: BluetoothAdapter? = null
     var bleGatt: BluetoothGatt? = null
+    var deviceID = ""
 
     private val binder = LocalBinder()
 
@@ -72,11 +73,9 @@ class BleService: Service() {
             return false
         }
 
-        if(bleAdapter == null && bleGatt == null) {
-            bleAdapter = (getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
-            val bleDevice = bleAdapter!!.getRemoteDevice(deviceAddr)
-            bleGatt = bleDevice.connectGatt(this, true, gattCallback, 2)
-        }
+        bleAdapter = (getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
+        val bleDevice = bleAdapter!!.getRemoteDevice(deviceAddr)
+        bleGatt = bleDevice.connectGatt(this, true, gattCallback, 2)
 
         return true
     }
@@ -90,6 +89,10 @@ class BleService: Service() {
         }
 
         try {
+            if(bleGatt == null) {
+                connectBle(deviceID)
+            }
+            
             bleGatt?.let { gatt ->
                 val service = gatt.getService(UUID.fromString(UUID_SERVICE))
                 if(service == null) {

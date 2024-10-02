@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
                 isServiceBinded = true
                 bleDeviceAddress?.let { id ->
                     Logger.LogI("Connecting to [$id]...")
+                    bleService!!.deviceID = id
                     bleService!!.connectBle(id)
                 }
             }
