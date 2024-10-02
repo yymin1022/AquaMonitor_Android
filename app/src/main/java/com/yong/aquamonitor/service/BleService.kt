@@ -92,7 +92,7 @@ class BleService: Service() {
             if(bleGatt == null) {
                 connectBle(deviceID)
             }
-            
+
             bleGatt?.let { gatt ->
                 val service = gatt.getService(UUID.fromString(UUID_SERVICE))
                 if(service == null) {
@@ -212,7 +212,9 @@ class BleService: Service() {
 
                 val receivedCycle = dataList[1].toInt()
                 val receivedValue = dataList[0].toDouble()
+                val receivedWeight = dataList[2].toDouble()
                 Logger.LogI("Message Received: [${receivedCycle} / ${receivedValue}]")
+                Logger.LogI("Weight is [$receivedWeight]")
 
                 processData(receivedCycle, receivedValue)
                 sendBroadcast(Intent(ACTION_BLE_DATA_RECEIVED))
