@@ -29,6 +29,8 @@ import com.yong.aquamonitor.util.Logger
 import com.yong.aquamonitor.util.PreferenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -81,7 +83,7 @@ class AnalyticsFragment: Fragment() {
 
         if((activity as MainActivity).bleService?.bleGatt != null) {
             val btDevice = (activity as MainActivity).bleService?.bleGatt!!.device
-            tvConnectStatus!!.text = String.format("[%s]에 연결되었습니다.", btDevice?.name)
+            tvConnectStatus!!.text = String.format("[AquaMonitor01]에 연결되었습니다.")
         }
 
         val bleReceiverFilter = IntentFilter().apply {
@@ -158,12 +160,18 @@ class AnalyticsFragment: Fragment() {
 
             R.id.main_analytics_btn_ble_request_reset -> {
                 (activity as MainActivity).bleService?.writeMessage("R")
-                readHydrationValue()
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000L)
+                    readHydrationValue()
+                }
             }
 
             R.id.main_analytics_btn_ble_request_update -> {
                 (activity as MainActivity).bleService?.writeMessage("U")
-                readHydrationValue()
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000L)
+                    readHydrationValue()
+                }
             }
         }
     }
@@ -174,7 +182,7 @@ class AnalyticsFragment: Fragment() {
                 Logger.LogD(intent.action.toString())
                 when(intent.action) {
                     BleService.ACTION_BLE_CONNECTED -> {
-                        tvConnectStatus!!.text = String.format("[%s]에 연결되었습니다.", intent.getStringExtra("DEVICE_NAME"))
+                        tvConnectStatus!!.text = String.format("[AquaMonitor01]에 연결되었습니다.", intent.getStringExtra("DEVICE_NAME"))
                     }
 
                     BleService.ACTION_BLE_DATA_RECEIVED -> {
