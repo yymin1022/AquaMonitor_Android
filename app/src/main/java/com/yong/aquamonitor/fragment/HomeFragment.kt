@@ -19,7 +19,7 @@ import kotlin.math.max
 
 class HomeFragment: Fragment() {
     private var tvAlarmTime: TextView? = null
-    private var tvAlarmValue: TextView? = null
+    private var tvTargetDone: TextView? = null
     private var tvTargetRemain: TextView? = null
 
     override fun onCreateView(
@@ -28,8 +28,8 @@ class HomeFragment: Fragment() {
     ): View? {
         val layoutInflater = inflater.inflate(R.layout.fragment_home, container, false)
         tvAlarmTime = layoutInflater.findViewById(R.id.main_home_alarm_time)
-        tvAlarmValue = layoutInflater.findViewById(R.id.main_home_alarm_value)
-        tvTargetRemain = layoutInflater.findViewById(R.id.main_home_target_remain)
+        tvTargetDone = layoutInflater.findViewById(R.id.main_home_target_done)
+        tvTargetRemain = layoutInflater.findViewById(R.id.main_home_target_remain_value)
 
         setNextAlarmView()
         setTargetRemainView()
@@ -44,7 +44,6 @@ class HomeFragment: Fragment() {
             if((alarmData.hour == curTime.hour && alarmData.min >= curTime.minute)
                 || alarmData.hour > curTime.hour) {
                 tvAlarmTime!!.text = String.format(Locale.getDefault(), "%02d:%02d", alarmData.hour, alarmData.min)
-                tvAlarmValue!!.text = String.format(Locale.getDefault(), "%dml", alarmData.value)
                 break
             }
         }
@@ -60,7 +59,8 @@ class HomeFragment: Fragment() {
             val targetValue = PreferenceUtil.getProfileTarget(requireActivity())
 
             val remainValue = max((targetValue - hydrationValue).toInt(), 0)
-            tvTargetRemain!!.text = String.format(Locale.getDefault(), "오늘은 %dml 더 마사면 목표를 달성해요!", remainValue)
+            tvTargetDone!!.text = String.format(Locale.getDefault(), "%dml", hydrationValue.toInt())
+            tvTargetRemain!!.text = String.format(Locale.getDefault(), "%dml", remainValue)
         }
     }
 }
